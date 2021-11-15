@@ -7,7 +7,7 @@ module.exports = {
   mode: 'development',
   entry: {
     main: './index.js',
-    applications: './applications.js',
+    application: './application.js',
   },
   output: {
     filename: '[name].[contenthash].js',

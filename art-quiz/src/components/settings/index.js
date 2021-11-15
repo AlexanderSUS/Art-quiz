@@ -1,8 +1,8 @@
-// import htmlToElement from '../../utils/htmlToElement';
-// import Greeting from './index.html';
+import htmlToElement from '../../utils/htmlToElement';
+import settings from './index.html';
 
-// import './index.scss';
+import './index.scss';
 
-// const greeting = htmlToElement(Greeting);
+const settingsPage = htmlToElement(settings);
 
-// export default greeting;
+export default settingsPage;
