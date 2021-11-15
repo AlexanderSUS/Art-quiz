@@ -23,7 +23,17 @@ module.exports = {
       },
       {
         test: /\.(sa|sc|c)ss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: path.resolve(__dirname, 'src/style/vars.scss'),
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|gif|ico)$/,

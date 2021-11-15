@@ -1,22 +1,20 @@
+@use '../../style/vars.scss';
+
 .settings {
-  display: none;
   position: relative;
-  transition: 0.3s ease-in-out;
-}
+  left: 100%;
 
-.settings.active {
-  left: 0;
   display: flex;
-
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
 
   height: 100%;
+  transition: 0.3s ease;
 }
 
-.settings.active.hidden {
-  left: 100%;
+.settings.active {
+  left: 0;
 }
 
 .sound-settings {
@@ -47,7 +45,7 @@
   max-width: 15vh; 
   height: 1.2vh;
 
-  background: linear-gradient(to right, #333 0%, #333 40%, #fff 0%, #fff 100%);
+  background: linear-gradient(to right, $major-dark-color 0%, $major-dark-color 40%, #fff 0%, #fff 100%);
   border-radius: 5px;
 }
 
@@ -57,8 +55,8 @@
   border-radius: 50%;
   -webkit-appearance: none;
   cursor: ew-resize;
-  background: whitesmoke;
-  border: 1px solid #333;
+  background: $major-light-color;
+  border: 1px solid $major-dark-color;
 }
 
 .time-settings {
@@ -70,8 +68,7 @@
   label {
     margin-bottom: 1vh;
     font-size: 1.2rem;
-    font-weight: 700;
-    color: #333;
+    font-weight: 500;
   }
 }
 
@@ -100,7 +97,7 @@
     font-weight: 400;
     font-size: 1.4rem;
     text-align: center;
-    color: #333;
+    color: $major-dark-color;
 
     border: none;
     background-color: transparent;
@@ -136,7 +133,7 @@
   height: 3vh;
   margin: 0;
 
-  color: #333;
+  color: $major-dark-color;
   
   background-color: transparent;
   border: none;
@@ -175,15 +172,19 @@
   width: 70vmin;
   height: 15vmax;
 
-  background: whitesmoke;
-  border: 3px solid #333;
+  background: $major-light-color;
+  border: 3px solid $major-dark-color;
   border-radius: 10px;
 }
 
 .settings-back-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: $major-dark-color;
   font-size: 2rem;
   &:active {
-      background-color: #333;
-      color: whitesmoke;
+      background-color: $major-dark-color;
+      color: $major-light-color;
   }
 }

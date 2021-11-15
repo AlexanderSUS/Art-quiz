@@ -1,3 +1,5 @@
+@use '../../style/vars.scss';
+
 .app-info {
   display: flex;
   flex-direction: row;
@@ -14,7 +16,7 @@
 
 .app-details a {
   display: block;
-  color: #333;
+  color: $major-dark-color;
   text-decoration: none;
 
   &:hover {

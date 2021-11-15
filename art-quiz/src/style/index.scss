@@ -1,3 +1,5 @@
+@use './vars.scss';
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,11 +10,11 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 400;
-  color: #333;
+  color: $major-dark-color;
 
   height: 100%;
 
-  background-color: whitesmoke;
+  background-color: $major-light-color;
 }
 
 header {
@@ -22,8 +24,16 @@ header {
   height: 5vh;
 }
 
+header.home {
+  height: 25vh;
+}
+
 main {
   height: 90vh;
+}
+
+main.home {
+  height: 70vh;
 }
 
 footer {
