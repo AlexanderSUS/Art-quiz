@@ -66,7 +66,7 @@ const config = {
     },
   ],
 
-  artirst: [
+  artist: [
     {
       genre: 'Portrait',
       played: false,

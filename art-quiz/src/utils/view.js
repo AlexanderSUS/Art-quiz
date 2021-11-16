@@ -11,13 +11,6 @@ export default class View {
     this.app.append(this.header, this.main, this.footer);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  createElement(tag, className) {
-    const element = document.createElement(tag);
-    if (className) element.classList.add(className);
-    return element;
-  }
-
   toggleHomePageStyle(element) {
     if (element.classList.contains('home')) {
       if (!this.header.classList.contains('home')) {
