@@ -10,7 +10,7 @@
   align-items: center;
 
   height: 100%;
-  transition: 0.3s ease;
+  transition: $page-transiton;
 }
 
 .settings.active {
@@ -31,7 +31,7 @@
   background-image: url("./assets/speaker.svg");
   opacity: .8;
   cursor: pointer;
-  transition: .3s;  
+  transition: $hover-transition;
 }
 
 .sound-btn.muted{

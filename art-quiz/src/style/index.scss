@@ -17,27 +17,12 @@ body {
   background-color: $major-light-color;
 }
 
-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5vh;
-}
-
-header.home {
-  height: 25vh;
-}
-
 main {
   height: 90vh;
+  transition: $page-transiton;
 }
 
 main.home {
   height: 70vh;
-}
-
-footer {
-  height: 5vh;
-  width: 100%;
 }
 

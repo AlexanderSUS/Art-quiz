@@ -1,0 +1,43 @@
+@use '../../style/vars.scss';
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5vh;
+
+  transition: $page-transiton;
+}
+
+header.home {
+  height: 25vh;
+}
+
+.logo-container {
+  text-align: center;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+header .logo-container {
+  height: 5vh;
+  width: 5vh;
+  .logo-up, .logo-bottom {
+    font-size: 2vh;
+  }
+}
+
+header.home .logo-container {
+  height: 20vh;
+  width: 20vh;
+
+  .logo-up, .logo-bottom {
+    font-size: 8vh;
+  }
+}
+
+.logo-up {
+  color: $major-light-color;
+  background-color: $major-dark-color;
+  border-top-left-radius: 10px ;
+}

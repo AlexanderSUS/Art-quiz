@@ -1,13 +1,12 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-// const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: {
     main: './index.js',
-    application: './application.js',
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -45,9 +44,9 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: './index.html',
     }),
-    // new CopyPlugin({
-    //   patterns: [{ from: 'components/player/assets/sounds', to: 'assets/sounds' }],
-    // }),
+    new CopyPlugin({
+      patterns: [{ from: 'components/footer/assets/', to: 'assets/' }],
+    }),
   ],
   devServer: {
     port: 5000,
