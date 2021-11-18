@@ -39,9 +39,14 @@ a.main-link {
 
 }
 
-a[href="#home"] {
+.categories-back-btn {
 
   display: block;
+
+  grid-area: categories-back-btn; 
+  align-self: center;
+  justify-self: center;
+
   width: 70vmin;
   height: 10vmax;
 
@@ -58,11 +63,4 @@ a[href="#home"] {
     background-color: $major-dark-color;
     color: $major-light-color;
   }
-}
-
-
-.categories-back-btn { 
-  grid-area: categories-back-btn; 
-  align-self: center;
-  justify-self: center;
 }
