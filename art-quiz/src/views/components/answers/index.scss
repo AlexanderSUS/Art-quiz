@@ -1,0 +1,29 @@
+@use '../../../style/vars.scss';
+
+.questions {
+  height: 90vmax;
+}
+
+.variants {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
+}
+
+.picture {
+  border-radius: 10px;
+  width: 90vmin;
+  height: 90vmin;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.picture.answer-btn {
+  width: 40vmin;
+  height: 40vmin;
+}
+
+

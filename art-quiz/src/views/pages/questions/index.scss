@@ -1,0 +1,61 @@
+@use '../../../style/vars.scss';
+
+.questions {
+  position: relative;
+  left: 100%;
+
+  display: flex;
+  flex-direction: column;
+  height: 90vmax;
+
+  transition: $page-transiton;
+}
+
+.questions.active {
+  left: 0;
+}
+
+.back-btn {
+
+  display: block;
+
+  align-self: center;
+  justify-self: center;
+
+  width: 40vmin;
+  height: 10vmax;
+
+  text-decoration: none;
+  text-align: center;
+  color: $major-dark-color;
+  font-size: 2rem;
+
+  background: $major-light-color;
+  border: 3px solid $major-dark-color;
+  border-radius: 10px;
+
+  &:active {
+    background-color: $major-dark-color;
+    color: $major-light-color;
+  }
+}
+
+.answer-btn {
+  transition: $page-transiton;
+}
+
+.variants.expose {
+
+  .answer-btn.picked{
+    background-color: red; 
+  }
+
+  .answer-btn.true {
+    background-color: greenyellow;
+  }
+
+  .answer-btn.picked.true {
+    background-color: greenyellow;
+  }
+
+}

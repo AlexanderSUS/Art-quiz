@@ -19,6 +19,7 @@ class Quiz {
       nude: 'Nude',
     };
     this.questions = {
+      total: 240,
       perType: 120,
       perCategory: 10,
       answers: {

@@ -3,6 +3,10 @@ export default class Model {
     this.quiz = quiz;
     this.quizConfig = JSON.parse(localStorage.getItem(this.quiz.config)) || config;
     this.location = null;
+    this.answers = null;
+    this.config = {
+      lang: 'ru',
+    };
   }
 
   getLocation() {
@@ -11,17 +15,18 @@ export default class Model {
       page: hash[0],
       type: hash[1],
       categoryId: hash[2],
+      pageNum: hash[3],
     };
   }
 
-  getPicturesByArtist() {
+  getDataByArtist() {
     return this.quiz.images.list.slice(
       this.location.categoryId * this.quiz.questions.perCategory,
       this.location.categoryId * this.quiz.questions.perCategory + this.quiz.questions.perCategory,
     );
   }
 
-  getPicturesByPicture() {
+  getDataByPicture() {
     return this.quiz.images.list.slice(
       this.quiz.questions.perType + this.location.categoryId * this.quiz.questions.perCategory,
       // eslint-disable-next-line operator-linebreak
@@ -32,23 +37,21 @@ export default class Model {
     );
   }
 
-  getPictures() {
+  getData() {
     return this.location.type === this.quiz.types.artist
-      ? this.getPicturesByArtist()
-      : this.getPicturesByPicture();
+      ? this.getDataByArtist()
+      : this.getDataByPicture();
   }
 
   getAnswers() {
-    const answers = this.getPictures().map((element) => {
+    this.answers = this.getData().map((element) => {
       const answer = {
         true: element,
         false: [],
         all: [element],
       };
       while (answer.false.length < this.quiz.questions.answers.false) {
-        const variant = Math.floor(
-          Math.random() * Object.keys(this.quiz.types).length * this.quiz.questions.perType,
-        );
+        const variant = Math.floor(Math.random() * this.quiz.questions.total);
 
         if (!answer.all.includes(variant)) {
           answer.false[answer.false.length] = this.quiz.images.list[variant];
@@ -57,17 +60,18 @@ export default class Model {
       }
       return answer;
     });
-    // console.log(answers);
-    return answers;
   }
 
-  // getQuestions() {
-  //   const answers = this.getAnswers();
-  //   const cards = answers.map((element) => {
-  //     if (this.location)
-  //     return {
-  //       question: this.location[1];
-  //     }
-  //   });
-  // }
+  shuffleAnswers() {
+    this.getAnswers();
+
+    this.answers.forEach((element) => {
+      for (let i = element.all.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * i);
+        const k = element.all[i];
+        element.all[i] = element.all[j];
+        element.all[j] = k;
+      }
+    });
+  }
 }

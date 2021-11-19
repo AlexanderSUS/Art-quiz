@@ -1,8 +1,8 @@
 import './index.scss';
 
-const footerElement = document.createElement('footer');
-footerElement.classList.add('home');
-footerElement.innerHTML = `<div class="app-info">
+const footer = document.createElement('footer');
+footer.classList.add('home');
+footer.innerHTML = `<div class="app-info">
                             <div class="rs-logo">
                               <a href="https://rs.school/js/"><img src="/assets/rs_school_js.svg" alt="rs school courses"></a>
                             </div>
@@ -14,4 +14,4 @@ footerElement.innerHTML = `<div class="app-info">
                             </div>
                           </div>`;
 
-export default footerElement;
+export default footer;

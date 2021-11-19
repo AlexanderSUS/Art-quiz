@@ -45,7 +45,7 @@ module.exports = {
       template: './index.html',
     }),
     new CopyPlugin({
-      patterns: [{ from: 'components/footer/assets/', to: 'assets/' }],
+      patterns: [{ from: 'views/components/footer/assets/', to: 'assets/' }],
     }),
   ],
   devServer: {
