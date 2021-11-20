@@ -6,6 +6,8 @@ export default class Controller {
 
   initChangePages() {
     window.onload = () => {
+      document.location.hash = '#home';
+      this.setAnswerListener();
       window.addEventListener('hashchange', () => {
         this.model.getLocation();
         this.pageChanger();
@@ -31,7 +33,10 @@ export default class Controller {
   pageProcessor() {
     this.view.toggleHomePageStyle(this.view.currentPage);
     if (this.model.location.page === Object.keys(this.view.pages)[2]) {
+      this.view.cleanPreviousCategories();
       this.fillCategoryPage();
+    } else if (+this.model.location.pageNum === this.model.quiz.questions.perCategory) {
+      console.log('Last Page');
     } else if (this.model.location.page === Object.keys(this.view.pages)[3]) {
       this.fillQuestionPage();
     }
@@ -39,29 +44,36 @@ export default class Controller {
 
   fillCategoryPage() {
     const cards = this.view.pages.categories.querySelectorAll('.card');
-    const titleContainers = this.view.pages.categories.querySelectorAll('.card-title-container');
     const titles = this.view.pages.categories.querySelectorAll('.card-title');
-    const links = this.view.pages.categories.querySelectorAll('a.main-link');
+    const links = this.view.pages.categories.querySelectorAll('.start-btn');
+    const titleContainer = this.view.pages.categories.querySelectorAll('.card-title-container');
+    const imageContainer = this.view.pages.categories.querySelectorAll('.image-container');
+    const results = this.model.getResults();
+    const isNull = (value) => value === null;
 
     this.model.quiz.covers[this.model.location.type].forEach((element, index) => {
       const img = new Image();
       img.src = `${this.model.quiz.images.url.small}${element.id}.jpg`;
 
+      // need to  add language support
       titles[index].textContent = element.category;
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
-      if (element.palayed) {
+      if (!this.model.config.results[this.model.location.type][index].every(isNull)) {
         cards[index].classList.add('played');
 
+        /* create score container */
         const score = document.createElement('div');
-        score.textContent = `${element.score}/10`;
+        score.classList.add('score');
+        score.textContent = `${results[index]}/10`;
+        titleContainer[index].append(score);
 
-        titleContainers[index].appendChild(score);
-
-        const resultLink = document.createElement('a');
-        resultLink.setAttribute('href', `#results=${this.model.location.type}=${index}`);
-        resultLink.classList.add('category-result-btn');
-        cards[index].appendChild(resultLink);
+        /* create reusult btn */
+        const resultBtn = document.createElement('a');
+        resultBtn.setAttribute('href', `#results=${this.model.location.type}=${index}`);
+        resultBtn.classList.add('category-result-btn');
+        resultBtn.textContent = 'Watch reusult';
+        imageContainer[index].appendChild(resultBtn);
 
         img.onload = () => {
           links[index].style.backgroundImage = `url(${img.src})`;
@@ -74,6 +86,16 @@ export default class Controller {
     });
   }
 
+  // clearCategoryPage() {
+  //   const titleContainer = this.view.pages.categories
+  //     .querySelectorAll('.card-title-container')
+  //     .forEach((elemetn) => {
+  //       element.removeChild(element.querySelector('.'));
+  //     });
+
+  //   const imageContainer = this.view.pages.categories.querySelectorAll('.image-container');
+  // }
+
   fillQuestionPage() {
     this.view.cleanPreviousAnswers();
     this.view.closeModalwindow();
@@ -83,10 +105,10 @@ export default class Controller {
     this.appendAnswersContainer();
     this.insertPictures();
     this.insertAuthors();
-    this.markTrueAnswer();
     this.setRouteToModalWindow();
+    this.markTrueAnswer();
+    this.fillModal();
     this.view.appendModalWindow();
-    this.view.setAnswerListener();
   }
 
   appendAnswersContainer() {
@@ -113,7 +135,9 @@ export default class Controller {
   insertQuestion() {
     // eslint-disable-next-line operator-linebreak
     this.view.currentPage.querySelector('h4').textContent =
-      this.model.quiz.dictionary[this.model.config.lang].question[this.model.location.type];
+      this.model.quiz.dictionary[this.model.config.settings.lang].question[
+        this.model.location.type
+      ];
   }
 
   insertPictures() {
@@ -147,7 +171,7 @@ export default class Controller {
           this.model.answers[this.model.location.pageNum].true[element.classList[0]]
       ) {
         element.classList.add('true');
-        // console.log(this.model.answers[this.model.location.pageNum].true[element.classList[0]]);
+        this.view.trueElement = element;
       }
     });
   }
@@ -173,5 +197,35 @@ export default class Controller {
           : this.model.answers[this.model.location.pageNum].true.picture
       }`,
     );
+  }
+
+  setAnswerListener() {
+    this.view.components.answers.artist.querySelectorAll('.answer-btn').forEach((button) => {
+      this.modifyPickedAnswer(button);
+    });
+    this.view.components.answers.picture.querySelectorAll('.answer-btn').forEach((button) => {
+      this.modifyPickedAnswer(button);
+    });
+  }
+
+  fillModal() {
+    this.view.components.modal.querySelector('.modal-image').style.backgroundImage = `url(${
+      this.model.quiz.images.url.full
+    }${this.model.answers[this.model.location.pageNum].true.imageNum}full.jpg)`;
+    this.view.components.modal.querySelector('.modal-picture-name').textContent =
+      this.model.answers[this.model.location.pageNum].true.picture;
+    this.view.components.modal.querySelector('.modal-author').textContent =
+      this.model.answers[this.model.location.pageNum].true.author;
+    this.view.components.modal.querySelector('.modal-year').textContent =
+      this.model.answers[this.model.location.pageNum].true.year;
+  }
+
+  modifyPickedAnswer(button) {
+    button.addEventListener('click', (e) => {
+      e.target.classList.add('picked');
+      this.model.pickResult(e.target.classList.contains('true'));
+      this.view.showTrueAnswer();
+      this.view.showModalWindow(e.target.classList.contains('true'));
+    });
   }
 }

@@ -39,23 +39,3 @@
     color: $major-light-color;
   }
 }
-
-.answer-btn {
-  transition: $page-transiton;
-}
-
-.variants.expose {
-
-  .answer-btn.picked{
-    background-color: red; 
-  }
-
-  .answer-btn.true {
-    background-color: greenyellow;
-  }
-
-  .answer-btn.picked.true {
-    background-color: greenyellow;
-  }
-
-}

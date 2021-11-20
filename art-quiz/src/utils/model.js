@@ -5,8 +5,33 @@ export default class Model {
     this.location = null;
     this.answers = null;
     this.config = {
-      lang: 'ru',
+      settings: {
+        lang: 'ru',
+      },
+      results: {
+        artist: new Array(Object.keys(this.quiz.category).length)
+          .fill(null)
+          .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
+        picture: new Array(Object.keys(this.quiz.category).length)
+          .fill(null)
+          .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
+      },
     };
+  }
+
+  getResults() {
+    const reducer = (previousValue, currentValue) => previousValue + currentValue;
+
+    return this.config.results[this.location.type].map((element) => {
+      const rate = element.reduce(reducer);
+      return rate;
+    });
+  }
+
+  pickResult(result) {
+    // eslint-disable-next-line operator-linebreak
+    this.config.results[this.location.type][this.location.categoryId][this.location.pageNum] =
+      result;
   }
 
   getLocation() {

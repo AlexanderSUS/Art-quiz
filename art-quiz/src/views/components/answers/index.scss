@@ -1,9 +1,5 @@
 @use '../../../style/vars.scss';
 
-.questions {
-  height: 90vmax;
-}
-
 .variants {
   display: flex;
   flex-direction: row;
@@ -19,6 +15,7 @@
   height: 90vmin;
   background-size: contain;
   background-repeat: no-repeat;
+  border-radius: 10px;
 }
 
 .picture.answer-btn {
@@ -26,4 +23,22 @@
   height: 40vmin;
 }
 
+.answer-btn {
+  transition: $page-transiton;
+}
 
+.answer-btn.picked{
+  background-color: red; 
+}
+
+.answer-btn.picked.true {
+  background-color: greenyellow;
+}
+
+.variants.expose {
+
+  .answer-btn.true {
+    background-color: greenyellow;
+  }
+
+}
