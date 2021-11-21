@@ -41,3 +41,8 @@ header.home .logo-container {
   background-color: $major-dark-color;
   border-top-left-radius: 10px ;
 }
+
+.logo-container a {
+  text-decoration: none;
+  color: $major-dark-color
+}

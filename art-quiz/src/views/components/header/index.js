@@ -3,7 +3,9 @@ import './index.scss';
 const header = document.createElement('header');
 header.classList.add('home');
 header.innerHTML = `<div class="logo-container">
-                              <div class="logo-up">ART</div>
-                              <div class="logo-bottom">QUIZ</div>
+                              <a href="#home">
+                                <div class="logo-up">ART</div>
+                                <div class="logo-bottom">QUIZ</div>
+                              </a>
                             </div>`;
 export default header;

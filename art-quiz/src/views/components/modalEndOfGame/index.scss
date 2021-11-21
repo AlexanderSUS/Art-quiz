@@ -1,7 +1,7 @@
 @use '../../../style/vars.scss';
 
 
-.modal-container {
+.modal-container-end {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,12 +15,12 @@
   transition: opacity $page-transiton;
 }
 
-.modal-container.show {
+.modal-container-end.show {
   pointer-events: auto;
   opacity: 1;
 }
 
-.modal {
+.modal-end-of-game {
   display: flex;
   justify-content: center;
   align-items: center;

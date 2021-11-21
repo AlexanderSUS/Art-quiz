@@ -4,6 +4,7 @@ export default class View {
     this.pages = pages;
     this.components = components;
     this.currentPage = this.pages.home;
+    this.currentModalWindow = this.components.modal;
     this.main = document.createElement('main');
     this.main.classList.add('home');
     this.main.append(this.currentPage);
@@ -54,20 +55,24 @@ export default class View {
   }
 
   appendModalWindow() {
-    this.currentPage.appendChild(this.components.modal);
+    this.currentPage.appendChild(this.currentModalWindow);
+  }
+
+  removeModalWindow() {
+    this.currentPage.removeChild(this.currentModalWindow);
   }
 
   showModalWindow(resultTrue) {
     setTimeout(
       () => {
-        this.components.modal.classList.add('show');
+        this.currentModalWindow.classList.add('show');
       },
       resultTrue ? 300 : 1000,
     );
   }
 
-  closeModalwindow() {
-    this.components.modal.classList.remove('show');
+  hideModalwindow() {
+    this.currentModalWindow.classList.remove('show');
   }
 
   clearAnswerClasses() {

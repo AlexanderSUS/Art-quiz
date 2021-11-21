@@ -28,9 +28,14 @@ class Quiz {
       },
       results: {
         grand: 10,
-        congrats: 8,
-        gameover: 3,
+        congrats: 7,
+        gameover: 6,
       },
+    };
+    this.rating = {
+      grand: 'grand',
+      congrants: 'congrats',
+      gameover: 'gameover',
     };
     this.language = {
       en: 'en',

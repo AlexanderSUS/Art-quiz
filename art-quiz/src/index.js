@@ -15,4 +15,4 @@ const app = new Controller(
   new View(pages, components),
 );
 
-app.initChangePages();
+app.init();

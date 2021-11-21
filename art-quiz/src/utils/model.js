@@ -98,4 +98,8 @@ export default class Model {
       }
     });
   }
+
+  isLastQuestion() {
+    return +this.location.pageNum === this.quiz.questions.perCategory - 1;
+  }
 }
