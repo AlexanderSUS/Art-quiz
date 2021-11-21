@@ -26,6 +26,11 @@ class Quiz {
         true: 1,
         false: 3,
       },
+      results: {
+        grand: 10,
+        congrats: 8,
+        gameover: 3,
+      },
     };
     this.language = {
       en: 'en',

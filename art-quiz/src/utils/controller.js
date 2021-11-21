@@ -10,19 +10,19 @@ export default class Controller {
       this.setAnswerListener();
       window.addEventListener('hashchange', () => {
         this.model.getLocation();
-        this.pageChanger();
+        this.handleLocation();
       });
     };
   }
 
-  pageChanger() {
+  handleLocation() {
     this.view.currentPage.classList.remove('active');
 
     setTimeout(() => {
       this.view.main.removeChild(this.view.currentPage);
       this.view.currentPage = this.view.pages[this.model.location.page];
       this.view.main.appendChild(this.view.currentPage);
-      this.pageProcessor();
+      this.pageProcessor(); /// was page processor
 
       setTimeout(() => {
         this.view.currentPage.classList.add('active');
@@ -86,28 +86,18 @@ export default class Controller {
     });
   }
 
-  // clearCategoryPage() {
-  //   const titleContainer = this.view.pages.categories
-  //     .querySelectorAll('.card-title-container')
-  //     .forEach((elemetn) => {
-  //       element.removeChild(element.querySelector('.'));
-  //     });
-
-  //   const imageContainer = this.view.pages.categories.querySelectorAll('.image-container');
-  // }
-
   fillQuestionPage() {
     this.view.cleanPreviousAnswers();
     this.view.closeModalwindow();
+    this.model.getAnswers();
     this.model.shuffleAnswers();
     this.setRouteToBackBtn();
     this.insertQuestion();
     this.appendAnswersContainer();
     this.insertPictures();
     this.insertAuthors();
-    this.setRouteToModalWindow();
+    this.setRouteToModal();
     this.markTrueAnswer();
-    this.fillModal();
     this.view.appendModalWindow();
   }
 
@@ -121,7 +111,7 @@ export default class Controller {
       .setAttribute('href', `#categories=${this.model.location.type}`);
   }
 
-  setRouteToModalWindow() {
+  setRouteToModal() {
     this.view.components.modal
       .querySelector('.modal-btn')
       .setAttribute(
@@ -212,12 +202,56 @@ export default class Controller {
     this.view.components.modal.querySelector('.modal-image').style.backgroundImage = `url(${
       this.model.quiz.images.url.full
     }${this.model.answers[this.model.location.pageNum].true.imageNum}full.jpg)`;
+
     this.view.components.modal.querySelector('.modal-picture-name').textContent =
       this.model.answers[this.model.location.pageNum].true.picture;
+
     this.view.components.modal.querySelector('.modal-author').textContent =
       this.model.answers[this.model.location.pageNum].true.author;
+
     this.view.components.modal.querySelector('.modal-year').textContent =
       this.model.answers[this.model.location.pageNum].true.year;
+  }
+
+  fillModalEndOfGame() {
+    const varyBtn = this.view.components.modalEndOfGame.querySelector('.modal-vary-btn');
+    const results = this.model.getResults();
+    const isNull = (value) => value === null;
+
+    this.setEndOfGameTitle();
+
+    if (
+      !this.model.config.results[this.model.location.type][this.model.location.categoryId].every(
+        isNull,
+      )
+    ) {
+      this.view.components.modalEndOfGame.querySelector('.end-of-game-score').textContent = `${
+        results[this.model.location.categoryId]
+      }/10`;
+      if (results[this.model.location.categoryId] > this.model.quiz.questions.gameover) {
+        varyBtn.setAttribute(
+          'href',
+          `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}`,
+        );
+        varyBtn.textContent = this.model.quiz.dictionary[this.model.config.lang].nextQuiz;
+      } else {
+        this.setPlatyAgainRoute(varyBtn);
+      }
+    } else {
+      this.setPlatyAgainRoute(varyBtn);
+    }
+  }
+
+  setEndOfGameTitle() {
+    this.view.components.modalEndOfGame.querySelector('.end-of-game-title').textContent =
+      this.model.quiz.dictionary[this.model.config.settings.lang].modalEndOfGame[
+        this.model.location.result
+      ];
+  }
+
+  setPlatyAgainRoute(element) {
+    element.setAttribute('href', `#questions=${this.model.location.type}=1}`);
+    element.textContent = this.model.quiz.dictionary[this.model.config.lang].playAgain;
   }
 
   modifyPickedAnswer(button) {
@@ -225,6 +259,7 @@ export default class Controller {
       e.target.classList.add('picked');
       this.model.pickResult(e.target.classList.contains('true'));
       this.view.showTrueAnswer();
+      this.fillModal();
       this.view.showModalWindow(e.target.classList.contains('true'));
     });
   }

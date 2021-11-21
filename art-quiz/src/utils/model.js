@@ -41,6 +41,7 @@ export default class Model {
       type: hash[1],
       categoryId: hash[2],
       pageNum: hash[3],
+      result: hash[4],
     };
   }
 
@@ -88,8 +89,6 @@ export default class Model {
   }
 
   shuffleAnswers() {
-    this.getAnswers();
-
     this.answers.forEach((element) => {
       for (let i = element.all.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * i);
