@@ -1,17 +1,45 @@
 @use '../../../style/vars.scss';
 
-$logo-container-mini: 5vmax;
-$logo-container-large: 20vmax;
-$logo-mini: 5vmax;
-$logo-large: 8vmax;
+$logo-container-mini: 7vh;
+$logo-container-large: 20vh;
+$logo-mini: 3vh;
+$logo-large: 8vh;
 
 header {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  height: $logo-container-mini;
+  align-items: flex-end;
+  height: 10vh;
 
   transition: $page-transiton;
+}
+
+// .text-home {
+//   writing-mode: vertical-lr;
+//   text-orientation: upright;
+//   letter-spacing: 0;
+// }
+
+header .logo-container {
+  left: 3vh;
+  height: $logo-container-mini;
+  width: $logo-container-mini;
+
+  .logo-up, .logo-bottom {
+    font-size: $logo-mini;
+    opacity: 0.8;
+  }
+
+  .logo-home {
+    display: block;
+    position: absolute;
+    top: -2.8vh;
+    left: -1.5vh;
+    height: 10vh;
+    width: 10vh;
+
+    opacity: 0.5;
+    z-index: -1;
+  }
 }
 
 header.at-home {
@@ -19,27 +47,28 @@ header.at-home {
   height: 25vh;
 }
 
-.logo-container {
-  text-align: center;
-  font-weight: 700;
-  transition: 0.3s;
-}
-
-header .logo-container {
-  height: $logo-container-mini;
-  width: $logo-container-mini;
-  .logo-up, .logo-bottom {
-    font-size: 2vh;
-  }
-}
-
 header.at-home .logo-container {
+  left: 0;
   height: $logo-container-large;
   width: $logo-container-large;
 
   .logo-up, .logo-bottom {
     font-size: $logo-large;
+    opacity: 0.9;
   }
+
+  .logo-home {
+    display: none;
+  }
+}
+
+.logo-container {
+  position: relative;
+
+  text-align: center;
+  font-weight: 700;
+
+  transition: 0.3s;
 }
 
 .logo-up {

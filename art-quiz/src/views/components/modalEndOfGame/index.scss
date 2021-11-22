@@ -22,32 +22,51 @@
 
 .modal-end-of-game {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 
-  height: 80vmin;
+  height: 80vh;
   max-width: 100%;
 
   padding: 10vmin 10vmin;
 
-  background-color: $dark-color;
+  background-color: $light-color;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  
 }
 
-.modal-btn {
-  background-color: #47a386;
-  color: #fff;
-  border-radius: 5px;
-  padding: 10px 25px;
-
-  font-size: 14px;
-  text-decoration: none;
-
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.end-of-game-title {
+  color: $dark-color;
+  font-size: 2rem;
 }
 
-.modal-image {
-  width: 50vmin;
-  height: 50vmin;
+.end-of-game-image {
+  height: 30vh;
+  width: 30vh;
+
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+.end-of-game-score {
+  font-size:  6vh;
+  font-weight: 700;
+
+}
+// .modal-btn {
+//   background-color: $green-color;
+//   color: $light-color; 
+//   border-radius: 10vh;
+//   padding: 10px 25px;
+
+//   font-size: 14px;
+//   text-decoration: none;
+
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+// }
+
+// .modal-image {
+//   width: 50vmin;
+//   height: 50vmin;
+// }

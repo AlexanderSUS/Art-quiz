@@ -141,7 +141,7 @@ export default class Controller {
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-year').textContent =
-      this.model.answers[this.model.location.pageNum].true.yearmo;
+      this.model.answers[this.model.location.pageNum].true.year;
   }
 
   fillEndOfGameModal() {

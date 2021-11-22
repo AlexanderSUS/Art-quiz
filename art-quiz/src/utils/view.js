@@ -44,6 +44,7 @@ export default class View {
         element
           .querySelector('.image-container')
           .removeChild(element.querySelector('.image-container').lastChild);
+        element.querySelector('.start-btn').style.backgroundImage = null;
       });
     }
   }
