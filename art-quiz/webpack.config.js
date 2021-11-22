@@ -48,6 +48,7 @@ module.exports = {
       patterns: [
         { from: 'views/components/footer/assets/', to: 'assets/' },
         { from: 'views/components/modalEndOfGame/assets', to: 'assets/' },
+        { from: 'views/pages/categories/assets', to: 'assets/' },
       ],
     }),
   ],

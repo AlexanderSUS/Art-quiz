@@ -6,12 +6,12 @@ import Quiz from './utils/quiz';
 import config from './utils/config';
 import images from './utils/images';
 import dictionary from './utils/dictionary';
-import covers from './utils/covers';
+import categories from './utils/categories';
 import components from './utils/components';
 import pages from './utils/pages';
 
 const app = new Controller(
-  new Model(config, new Quiz(images, dictionary, covers)),
+  new Model(config, new Quiz(images, dictionary, categories)),
   new View(pages, components),
 );
 

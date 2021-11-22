@@ -58,16 +58,21 @@ export default class Controller {
     const results = this.model.getResults();
     const isNull = (value) => value === null;
 
-    this.model.quiz.covers[this.model.location.type].forEach((element, index) => {
+    this.model.quiz.categories.forEach((element, index) => {
       const img = new Image();
-      img.src = `${this.model.quiz.images.url.small}${element.id}.jpg`;
+      img.src = `${this.model.quiz.images.url.small}${element.cover[this.model.location.type]}.jpg`;
 
-      // NEED TO  ADD LANGUAGE SUPPORT
-      titles[index].textContent = element.category;
+      // eslint-disable-next-line operator-linebreak
+      titles[index].textContent =
+        this.model.quiz.dictionary[this.model.config.settings.lang].categories[
+          Object.keys(this.model.quiz.categories[index])[0]
+        ];
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
       if (!this.model.config.results[this.model.location.type][index].every(isNull)) {
         cards[index].classList.add('played');
+
+        links[index].style.backgroundImage = 'url(/assets/replay.svg)';
 
         /* create score container */
         const score = document.createElement('div');
@@ -85,11 +90,13 @@ export default class Controller {
         imageContainer[index].appendChild(resultBtn);
 
         img.onload = () => {
-          links[index].style.backgroundImage = `url(${img.src})`;
+          imageContainer[index].style.backgroundImage = `url(${img.src})`;
         };
       } else {
         img.onload = () => {
-          links[index].style.backgroundImage = `linear-gradient(black, black), url(${img.src})`;
+          imageContainer[
+            index
+          ].style.backgroundImage = `linear-gradient(black, black), url(${img.src})`;
         };
       }
     });

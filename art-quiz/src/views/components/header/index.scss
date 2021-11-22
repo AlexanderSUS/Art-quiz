@@ -1,15 +1,21 @@
 @use '../../../style/vars.scss';
 
+$logo-container-mini: 5vmax;
+$logo-container-large: 20vmax;
+$logo-mini: 5vmax;
+$logo-large: 8vmax;
+
 header {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  height: 5vh;
+  height: $logo-container-mini;
 
   transition: $page-transiton;
 }
 
 header.at-home {
+  justify-content: center;
   height: 25vh;
 }
 
@@ -20,29 +26,29 @@ header.at-home {
 }
 
 header .logo-container {
-  height: 5vh;
-  width: 5vh;
+  height: $logo-container-mini;
+  width: $logo-container-mini;
   .logo-up, .logo-bottom {
     font-size: 2vh;
   }
 }
 
 header.at-home .logo-container {
-  height: 20vh;
-  width: 20vh;
+  height: $logo-container-large;
+  width: $logo-container-large;
 
   .logo-up, .logo-bottom {
-    font-size: 8vh;
+    font-size: $logo-large;
   }
 }
 
 .logo-up {
-  color: $major-light-color;
-  background-color: $major-dark-color;
+  color: $dark-color;
+  background-color: $light-color;
   border-top-left-radius: 10px ;
 }
 
 .logo-container a {
   text-decoration: none;
-  color: $major-dark-color
+  color: $light-color
 }

@@ -9,10 +9,10 @@ export default class Model {
         lang: 'ru',
       },
       results: {
-        artist: new Array(Object.keys(this.quiz.category).length)
+        artist: new Array(this.quiz.categories.length)
           .fill(null)
           .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
-        picture: new Array(Object.keys(this.quiz.category).length)
+        picture: new Array(this.quiz.categories.length)
           .fill(null)
           .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
       },

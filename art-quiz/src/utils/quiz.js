@@ -1,23 +1,10 @@
 class Quiz {
-  constructor(images, dictionary, covers) {
+  constructor(images, dictionary, categories) {
     this.types = {
       artist: 'artist',
       picture: 'picture',
     };
-    this.category = {
-      portrait: 'Portrait',
-      landscape: 'Landscape',
-      stillife: 'Stil life',
-      impressionism: 'Impressionism',
-      expressionism: 'Expressionism',
-      avantgarde: 'Avant-garde',
-      renaissance: 'Renaissance',
-      surrealism: 'Surrealism',
-      kitsch: 'Kitsch',
-      minimalism: 'Minimalism',
-      interior: 'Interior',
-      nude: 'Nude',
-    };
+    this.categories = categories;
     this.questions = {
       total: 240,
       perType: 120,
@@ -62,7 +49,6 @@ class Quiz {
     };
     this.dictionary = dictionary;
     this.config = 'quiz-config';
-    this.covers = covers;
   }
 }
 
