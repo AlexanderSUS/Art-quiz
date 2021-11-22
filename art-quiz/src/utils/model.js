@@ -41,7 +41,6 @@ export default class Model {
       type: hash[1],
       categoryId: hash[2],
       pageNum: hash[3],
-      result: hash[4],
     };
   }
 

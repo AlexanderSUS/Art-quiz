@@ -7,6 +7,7 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
+      this.fillNavButtonsText();
       this.setAnswerListener();
       this.setShowEndOfGameModal();
       this.setDefaultModalWindow();
@@ -39,9 +40,12 @@ export default class Controller {
     if (this.model.location.page === Object.keys(this.view.pages)[2]) {
       this.view.cleanPreviousCategories();
       this.fillCategoryPage();
+    } else if (this.model.location.pageNum > this.model.quiz.questions.perCategory - 1) {
+      document.location.hash = '#home';
     } else if (this.model.location.page === Object.keys(this.view.pages)[3]) {
       this.fillQuestionPage();
     }
+    this.fillNavButtonsText();
   }
   // END ROUTING FUNCTIONS ****
 
@@ -58,7 +62,7 @@ export default class Controller {
       const img = new Image();
       img.src = `${this.model.quiz.images.url.small}${element.id}.jpg`;
 
-      // need to  add language support
+      // NEED TO  ADD LANGUAGE SUPPORT
       titles[index].textContent = element.category;
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
@@ -75,7 +79,9 @@ export default class Controller {
         const resultBtn = document.createElement('a');
         resultBtn.setAttribute('href', `#results=${this.model.location.type}=${index}`);
         resultBtn.classList.add('category-result-btn');
-        resultBtn.textContent = 'Watch reusult';
+        // eslint-disable-next-line operator-linebreak
+        resultBtn.textContent =
+          this.model.quiz.dictionary[this.model.config.settings.lang].titles.results;
         imageContainer[index].appendChild(resultBtn);
 
         img.onload = () => {
@@ -86,6 +92,15 @@ export default class Controller {
           links[index].style.backgroundImage = `linear-gradient(black, black), url(${img.src})`;
         };
       }
+    });
+  }
+
+  fillNavButtonsText() {
+    const buttons = this.view.currentPage.querySelectorAll('.nav-btn');
+    buttons.forEach((btn) => {
+      // eslint-disable-next-line operator-linebreak
+      btn.textContent =
+        this.model.quiz.dictionary[this.model.config.settings.lang].buttons[btn.classList[0]];
     });
   }
 
@@ -126,30 +141,28 @@ export default class Controller {
     const varyBtn = this.view.currentModalWindow.querySelector('.modal-vary-btn');
     const results = this.model.getResults();
     const rating = this.getRating(results);
-    const isNull = (value) => value === null;
 
     this.setEndOfGameTitle(rating);
     this.setEndOfGamePicture(rating);
 
-    if (
-      !this.model.config.results[this.model.location.type][this.model.location.categoryId].every(
-        isNull,
-      )
-    ) {
-      this.view.currentModalWindow.querySelector('.end-of-game-score').textContent = `${
-        results[this.model.location.categoryId]
-      }/${this.model.quiz.questions.perCategory}`;
-      if (results[this.model.location.categoryId] > this.model.quiz.questions.gameover) {
-        varyBtn.setAttribute(
-          'href',
-          `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
-        );
-        varyBtn.textContent = this.model.quiz.dictionary[this.model.config.lang].buttons.nextQuiz;
-      } else {
-        this.setRouteToPlayAgainBnt(varyBtn);
-      }
+    this.view.currentModalWindow.querySelector('.end-of-game-score').textContent = `${
+      results[this.model.location.categoryId]
+    }/${this.model.quiz.questions.perCategory}`;
+
+    if (results[this.model.location.categoryId] > this.model.quiz.questions.gameover) {
+      varyBtn.setAttribute(
+        'href',
+        `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
+      );
+      varyBtn.textContent = this.model.quiz.dictionary[this.model.config.lang].buttons.nextQuiz;
     } else {
-      this.setRouteToPlayAgainBnt(varyBtn);
+      varyBtn.setAttribute(
+        'href',
+        `#questions=${this.model.location.type}=${this.model.location.categoryId}=0`,
+      );
+      // eslint-disable-next-line operator-linebreak
+      varyBtn.textContent =
+        this.model.quiz.dictionary[this.model.config.settings.lang].buttons.playAgain;
     }
   }
 
@@ -218,16 +231,6 @@ export default class Controller {
       );
   }
 
-  setRouteToPlayAgainBnt(element) {
-    element.setAttribute(
-      'href',
-      `#questions=${this.model.location.type}=${this.model.location.categoryId}=0`,
-    );
-    // eslint-disable-next-line operator-linebreak
-    element.textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.playAgain;
-  }
-
   setShowEndOfGameModal() {
     this.view.components.modal.querySelector('.modal-next-btn').addEventListener('click', () => {
       if (this.model.isLastQuestion()) {
@@ -236,6 +239,7 @@ export default class Controller {
         this.fillEndOfGameModal();
         this.view.appendModalWindow();
         this.setRouteToBackBnts();
+        this.fillNavButtonsText();
         this.view.showModalWindow();
       }
     });

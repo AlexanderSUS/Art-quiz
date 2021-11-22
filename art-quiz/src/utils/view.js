@@ -6,20 +6,20 @@ export default class View {
     this.currentPage = this.pages.home;
     this.currentModalWindow = this.components.modal;
     this.main = document.createElement('main');
-    this.main.classList.add('home');
+    this.main.classList.add('at-home');
     this.main.append(this.currentPage);
     this.app.append(this.components.header, this.main, this.components.footer);
   }
 
   toggleHomePageStyle(element) {
-    if (element.classList.contains('home')) {
-      if (!this.components.header.classList.contains('home')) {
-        this.components.header.classList.add('home');
-        this.main.classList.add('home');
+    if (element.classList.contains('at-home')) {
+      if (!this.components.header.classList.contains('at-home')) {
+        this.components.header.classList.add('at-home');
+        this.main.classList.add('at-home');
       }
-    } else if (this.components.header.classList.contains('home')) {
-      this.components.header.classList.remove('home');
-      this.main.classList.remove('home');
+    } else if (this.components.header.classList.contains('at-home')) {
+      this.components.header.classList.remove('at-home');
+      this.main.classList.remove('at-home');
     }
   }
 

@@ -1,4 +1,4 @@
-<div class="settings home">
+<div class="settings-container at-home">
   <div class="sound-settings">
     <div class="sound-btn"></div>
     <input class="volume-range" type="range" value="40" min="0" max="100" step="1" id="volume-range">
@@ -17,8 +17,17 @@
       </div>
     </div>
   </div>
-  <a class="settings-back-btn" href="#home">Back</a>
-  <!-- <div class="language-settings">
-    <input type="radio" name="" id="">
-  </div> -->
+  <div class="language-settings">
+    <label for="lang">Language</label>
+    <label class="switch">
+      <input type="checkbox">
+      <span class="slider round"></span>
+    </label>
+    <div class="lang">
+      <div class="en">🇬🇧</div>
+      <div class="ru">🇷🇺</div>
+    </div>
+  </div>
+<!-- Do not change posision of class "home"! it must be first!! -->
+  <a class="home settings-back-btn nav-btn" href="#home">Back</a>
 </div>

@@ -1,6 +1,6 @@
 @use '../../../style/vars.scss';
 
-.categories {
+.categories-container {
   position: relative;
   left: 100%;
 
@@ -22,7 +22,7 @@
   transition: $page-transiton;
 }
 
-.categories.active {
+.categories-container.active {
   left: 0;
 }
 
