@@ -4,7 +4,7 @@ const footer = document.createElement('footer');
 footer.classList.add('home');
 footer.innerHTML = `<div class="app-info">
                             <div class="rs-logo">
-                              <a href="https://rs.school/js/"><img src="/assets/rs_school_js.svg" alt="rs school courses"></a>
+                              <a href="https://rs.school/js/"><img src="./assets/rs_school_js.svg" alt="rs school courses"></a>
                             </div>
                             <div class="app-details">
                               <a href="https://github.com/AlexanderSUS">

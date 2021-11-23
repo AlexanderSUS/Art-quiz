@@ -48,6 +48,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.modal-check {
+  display: none;
+  height: 8vmin;
+  width: 8vmin;
+}
+
 .modal-image {
   width: 50vh;
   height: 50vh;
@@ -58,8 +64,28 @@
   background-size: contain;
 }
 
+
+.modal-image.false {
+
+  .false-answer {
+    display: block;
+  }
+}
+
+.modal-image.true {
+
+  .true-answer {
+    display: block;
+  }
+}
+
 .modal-picture-name, .modal-author, .modal-year, p {
   color: $dark-color;
+}
+
+p {
+  font-size: 2vmax;
+  margin-bottom: 2vmin;
 }
 
 .modal-year {

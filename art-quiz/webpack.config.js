@@ -46,6 +46,8 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
+        { from: 'views/components/modal/assets/', to: 'assets/' },
+        { from: 'views/components/answers/assets/', to: 'assets/' },
         { from: 'views/components/header/assets/', to: 'assets/' },
         { from: 'views/components/footer/assets/', to: 'assets/' },
         { from: 'views/components/modalEndOfGame/assets', to: 'assets/' },
@@ -54,6 +56,9 @@ module.exports = {
     }),
   ],
   devServer: {
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
     port: 5000,
   },
 };

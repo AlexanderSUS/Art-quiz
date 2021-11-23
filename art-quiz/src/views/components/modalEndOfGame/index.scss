@@ -38,15 +38,17 @@
 
 .end-of-game-title {
   color: $dark-color;
-  font-size: 2rem;
+  font-size: 5vmax;
 }
 
 .end-of-game-image {
-  height: 30vh;
-  width: 30vh;
+  height: 30vmax;
+  width: 30vmax;
 
   background-position: center;
   background-repeat: no-repeat;
+
+  background-size: 30vmax 30vmax ;
 }
 
 .end-of-game-score {
@@ -54,19 +56,7 @@
   font-weight: 700;
 
 }
-// .modal-btn {
-//   background-color: $green-color;
-//   color: $light-color; 
-//   border-radius: 10vh;
-//   padding: 10px 25px;
 
-//   font-size: 14px;
-//   text-decoration: none;
-
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-// }
-
-// .modal-image {
-//   width: 50vmin;
-//   height: 50vmin;
-// }
+.categories.modal-btn {
+  margin-bottom: 2vh;
+}

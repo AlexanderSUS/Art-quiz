@@ -1,10 +1,9 @@
 export default class Model {
-  constructor(config, quiz) {
+  constructor(quiz) {
     this.quiz = quiz;
-    this.quizConfig = JSON.parse(localStorage.getItem(this.quiz.config)) || config;
     this.location = null;
     this.answers = null;
-    this.config = {
+    this.config = JSON.parse(localStorage.getItem('art-quiz-config')) || {
       settings: {
         lang: 'ru',
       },
@@ -17,6 +16,11 @@ export default class Model {
           .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
       },
     };
+  }
+
+  saveConfig() {
+    const config = JSON.stringify(this.config);
+    localStorage.setItem('art-quiz-config', config);
   }
 
   getResults() {

@@ -76,6 +76,12 @@ export default class View {
     this.currentModalWindow.classList.remove('show');
   }
 
+  addCheckmarkToModal(answer) {
+    this.components.modal.querySelector('.modal-image').classList.remove('true');
+    this.components.modal.querySelector('.modal-image').classList.remove('false');
+    this.components.modal.querySelector('.modal-image').classList.add(answer);
+  }
+
   clearAnswerClasses() {
     this.currentPage.querySelector('.variants').classList.remove('expose');
     this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {

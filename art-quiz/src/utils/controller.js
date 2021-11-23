@@ -12,6 +12,7 @@ export default class Controller {
       this.setShowEndOfGameModal();
       this.setDefaultModalWindow();
       window.addEventListener('hashchange', () => {
+        this.model.saveConfig();
         this.model.getLocation();
         this.handleLocation();
       });
@@ -210,7 +211,7 @@ export default class Controller {
   setEndOfGamePicture(result) {
     this.view.currentModalWindow.querySelector(
       '.end-of-game-image',
-    ).style.backgroundImage = `url(/assets/${result}.svg)`;
+    ).style.backgroundImage = `url(./assets/${result}.svg)`;
   }
 
   setEndOfGameTitle(result) {
@@ -314,6 +315,7 @@ export default class Controller {
     button.addEventListener('click', (e) => {
       e.target.classList.add('picked');
       this.model.pickResult(e.target.classList.contains('true'));
+      this.view.addCheckmarkToModal(e.target.classList.contains('true'));
       this.view.showTrueAnswer();
       this.fillModal();
       this.view.showModalWindow(e.target.classList.contains('true'));
