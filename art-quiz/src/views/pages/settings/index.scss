@@ -26,12 +26,58 @@
   align-items: center;
 }
 
+.language-settings-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  // width: 55vmin;
+}
+
+.lang-title {
+   font-size: 4vh;
+}
+
+.lang-flags > * {
+  font-size: 4vh;
+}
+
+.time-value-title,
+.time-check-title {
+  margin-bottom: 1vh;
+
+  font-size: 2.6vh;
+  font-weight: 500;
+  color: $dark-color;
+}
+
+.time-check {
+  height: 4vh;
+  width: 4vh;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  border-radius: 4px;
+  outline: none;
+  transition-duration: 0.3s;
+  background-color: $pink-color;
+  border-radius:  25%;
+  cursor: pointer;
+}
+
+.time-check:checked {
+  background-color: $green-color;
+}
+
+.language-settings {
+  justify-content: space-evenly;
+}
+
 .sound-btn {
   width: 10vh;
   height: 10vh;
   background-size: 10vh 10vh;
   background-image: url("./assets/speaker.svg");
-  opacity: .8;
   cursor: pointer;
   transition: $hover-transition;
 }
@@ -47,7 +93,7 @@
   max-width: 15vh; 
   height: 1.2vh;
 
-  background: linear-gradient(to right, $light-color 0%, $light-color 40%, #fff 0%, #fff 100%);
+  background: linear-gradient(to right, $pink-color 0%, $pink-color 40%, $green-color 0%, $green-color 100%);
   border-radius: 5px;
 }
 
@@ -61,17 +107,15 @@
   border: 1px solid $light-color;
 }
 
-.time-settings label {
-    margin-bottom: 1vh;
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-
 .time-game,
 .time-choise {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.time-game {
+  position: relative;
 }
 
 .time-check {
@@ -90,7 +134,7 @@
 
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: 3.7vh;
     text-align: center;
     color: $light-color;
 
@@ -124,8 +168,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 3vh;
-  height: 3vh;
+  width: 4vh;
+  height: 4vh;
   margin: 0;
 
   color: $light-color;
@@ -152,13 +196,7 @@
 }
 
 .time-input.minus {
-  left: -25px;
-  top: 5px;
-}
-
-.time-input.plus {
-  top: 5px;
-  left:30px;
+  left: -4vh;
 }
 
 .sound-settings,
@@ -177,25 +215,24 @@
 .settings-back-btn {
   display: block;
   text-align: center;
-  height: 15vh;
-  width: 70vmin;
   text-decoration: none;
-  padding-top: 3vh;
-  color: $dark-color;
-  font-size: 2rem;
+  padding-top: 2vh;
+  font-size: 6vh;
+
   &:active {
       background-color: $light-color;
       color: $dark-color;
   }
 }
 
-
 /* The switch - the box around the slider */
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 9.4vh;
+  height: 5.3vh;
+
+  transform: rotate(90deg);
 }
 
 /* Hide default HTML checkbox */
@@ -213,7 +250,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: $dark-color; 
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -221,27 +258,37 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
+  height: 4.1vh;
+  width: 4.1vh;
+  left: 0.65vh;
+  bottom: 0.65vh;
+  
+  background-color: $light-color;
   -webkit-transition: .4s;
   transition: .4s;
 }
 
-input:checked + .slider {
-  background-color: #2196F3;
+input + .slider {
+  background-color: $dark-color;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px $dark-color;
+}
+
+
+input:checked + .slider {
+  background-color: $dark-color;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px $dark-color;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(4.1vh);
+  -ms-transform: translateX(4.1vh);
+  transform: translateX(4.1vh);
 }
 
 /* Rounded sliders */

@@ -5,11 +5,11 @@
   </div>
   <div class="settings-block time-settings">
     <div class="time-game">
-      <label for="time-check">Time game</label>
+      <label class="time-check-title" for="time-check"></label>
       <input class="time-check" type="checkbox" id="time">
     </div>
     <div class="settings-block time-choise">
-      <label for="time-value">Time to answer</label>
+      <label class="time-value-title" for="time-value"></label>
       <div class="time-adjuster">
         <button class="time-input minus"></button>
         <input class="time-value" id="time-value" type="number" step="5" min="5" max="30" placeholder="20"></input>
@@ -18,14 +18,16 @@
     </div>
   </div>
   <div class="settings-block language-settings">
-    <label for="lang">Language</label>
-    <label class="switch">
-      <input type="checkbox">
-      <span class="slider round"></span>
-    </label>
-    <div class="lang">
-      <div class="en">🇬🇧</div>
-      <div class="ru">🇷🇺</div>
+    <div class="language-settings-wrapper">
+      <div class="lang-title"></div>
+        <label class="switch">
+          <input id="lang-check" type="checkbox" checked>
+          <span class="slider round"></span>
+        </label>
+        <div class="lang-flags">
+          <div class="en">🇬🇧</div>
+          <div class="ru">🇷🇺</div>
+        </div>
     </div>
   </div>
 <!-- Do not change posision of class "home"! it must be first!! -->

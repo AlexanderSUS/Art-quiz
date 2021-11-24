@@ -11,7 +11,10 @@ export default class Controller {
       this.setAnswerListener();
       this.setShowEndOfGameModal();
       this.setDefaultModalWindow();
+      this.loadSettings();
+      this.switchLanguage();
       window.addEventListener('hashchange', () => {
+        this.switchLanguage();
         this.model.saveConfig();
         this.model.getLocation();
         this.handleLocation();
@@ -38,7 +41,9 @@ export default class Controller {
 
   pageProcessor() {
     this.view.toggleHomePageStyle(this.view.currentPage);
-    if (this.model.location.page === Object.keys(this.view.pages)[2]) {
+    if (this.model.location.page === Object.keys(this.view.pages)[1]) {
+      this.setSettingsTitles();
+    } else if (this.model.location.page === Object.keys(this.view.pages)[2]) {
       this.view.cleanPreviousCategories();
       this.fillCategoryPage();
     } else if (this.model.location.pageNum > this.model.quiz.questions.perCategory - 1) {
@@ -337,5 +342,36 @@ export default class Controller {
         this.view.trueElement = element;
       }
     });
+  }
+
+  setSettingsTitles() {
+    // eslint-disable-next-line operator-linebreak
+    document.querySelector('.lang-title').textContent =
+      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.language;
+    // eslint-disable-next-line operator-linebreak
+    document.querySelector('.time-check-title').textContent =
+      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.timeGame;
+    // eslint-disable-next-line operator-linebreak
+    document.querySelector('.time-value-title').textContent =
+      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.timeToAnswer;
+  }
+
+  switchLanguage() {
+    this.view.pages.settings.querySelector('#lang-check').addEventListener('change', (e) => {
+      if (e.target.checked) {
+        this.model.config.settings.lang = this.model.quiz.language.ru;
+      } else {
+        this.model.config.settings.lang = this.model.quiz.language.en;
+      }
+      this.setSettingsTitles();
+      this.fillNavButtonsText();
+      this.saveConfig();
+    });
+  }
+
+  loadSettings() {
+    // eslint-disable-next-line operator-linebreak
+    this.view.pages.settings.querySelector('#lang-check').checked =
+      this.model.config.settings.lang === this.model.quiz.language.ru;
   }
 }

@@ -24,6 +24,9 @@ const dictionary = {
       artist: 'Художники',
       picture: 'Картины',
       settings: 'Настройки',
+      timeGame: 'Игра на время',
+      timeToAnswer: 'Время на ответ',
+      language: 'Язык',
     },
     categories: {
       portrait: 'Портрет',
@@ -65,6 +68,9 @@ const dictionary = {
       artist: 'Artist',
       picture: 'Picture',
       settings: 'Settings',
+      timeGame: 'Time game',
+      timeToAnswer: 'Time to answer',
+      language: 'Language',
     },
     categories: {
       portrait: 'Portrait',
