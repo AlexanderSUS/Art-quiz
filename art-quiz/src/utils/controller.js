@@ -14,7 +14,6 @@ export default class Controller {
       this.loadSettings();
       this.switchLanguage();
       window.addEventListener('hashchange', () => {
-        this.switchLanguage();
         this.model.saveConfig();
         this.model.getLocation();
         this.handleLocation();
@@ -139,11 +138,11 @@ export default class Controller {
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-picture-name').textContent =
-      this.model.answers[this.model.location.pageNum].true.picture;
+      this.model.answers[this.model.location.pageNum].true.picture[this.model.config.settings.lang];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-author').textContent =
-      this.model.answers[this.model.location.pageNum].true.author;
+      this.model.answers[this.model.location.pageNum].true.author[this.model.config.settings.lang];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-year').textContent =
@@ -279,7 +278,9 @@ export default class Controller {
       if (targets[i].textContent.includes('__artist__')) {
         targets[i].textContent = targets[i].textContent.replace(
           '__artist__',
-          this.model.answers[this.model.location.pageNum].all[j++].author,
+          this.model.answers[this.model.location.pageNum].all[j++].author[
+            this.model.config.settings.lang
+          ],
         );
       }
     }
@@ -302,8 +303,12 @@ export default class Controller {
       'data-picture-name',
       `${
         this.model.location.type === this.model.quiz.types.picture
-          ? this.model.answers[this.model.location.pageNum].all[index].picture
-          : this.model.answers[this.model.location.pageNum].true.picture
+          ? this.model.answers[this.model.location.pageNum].all[index].picture[
+            this.model.config.settings.lang
+          ]
+          : this.model.answers[this.model.location.pageNum].true.picture[
+            this.model.config.settings.lang
+          ]
       }`,
     );
   }
@@ -333,10 +338,15 @@ export default class Controller {
         // eslint-disable-next-line operator-linebreak
         element.textContent ===
           // eslint-disable-next-line operator-linebreak
-          this.model.answers[this.model.location.pageNum].true[element.classList[0]] ||
+          this.model.answers[this.model.location.pageNum].true[element.classList[0]][
+            this.model.config.settings.lang
+            // eslint-disable-next-line operator-linebreak
+          ] ||
         // eslint-disable-next-line operator-linebreak
         element.getAttribute('data-picture-name') ===
-          this.model.answers[this.model.location.pageNum].true[element.classList[0]]
+          this.model.answers[this.model.location.pageNum].true[element.classList[0]][
+            this.model.config.settings.lang
+          ]
       ) {
         element.classList.add('true');
         this.view.trueElement = element;
@@ -365,7 +375,7 @@ export default class Controller {
       }
       this.setSettingsTitles();
       this.fillNavButtonsText();
-      this.saveConfig();
+      this.model.saveConfig();
     });
   }
 
