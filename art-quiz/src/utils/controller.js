@@ -134,19 +134,23 @@ export default class Controller {
   fillModal() {
     this.view.currentModalWindow.querySelector('.modal-image').style.backgroundImage = `url(${
       this.model.quiz.images.url.full
-    }${this.model.answers[this.model.location.pageNum].true.imageNum}full.jpg)`;
+    }${this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true]}full.jpg)`;
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-picture-name').textContent =
-      this.model.answers[this.model.location.pageNum].true.picture[this.model.config.settings.lang];
+      this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].picture[
+        this.model.config.settings.lang
+      ];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-author').textContent =
-      this.model.answers[this.model.location.pageNum].true.author[this.model.config.settings.lang];
+      this.model.quiz.imgaes.list[this.model.answers[this.model.location.pageNum].true].author[
+        this.model.config.settings.lang
+      ];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-year').textContent =
-      this.model.answers[this.model.location.pageNum].true.year;
+      this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].year;
   }
 
   fillEndOfGameModal() {
@@ -268,7 +272,7 @@ export default class Controller {
   insertPictures() {
     this.view.currentPage.querySelectorAll('.picture').forEach((element, index) => {
       this.addPicture(element, index);
-      this.addPictureNameAttribute(element, index);
+      this.addPictureId(element, index);
     });
   }
 
@@ -278,9 +282,8 @@ export default class Controller {
       if (targets[i].textContent.includes('__artist__')) {
         targets[i].textContent = targets[i].textContent.replace(
           '__artist__',
-          this.model.answers[this.model.location.pageNum].all[j++].author[
-            this.model.config.settings.lang
-          ],
+          this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].all[j++]]
+            .author[this.model.config.settings.lang],
         );
       }
     }
@@ -290,25 +293,22 @@ export default class Controller {
     const img = new Image();
     img.src = `${this.model.quiz.images.url.full}${
       this.model.location.type === this.model.quiz.types.picture
-        ? this.model.answers[this.model.location.pageNum].all[index].imageNum
-        : this.model.answers[this.model.location.pageNum].true.imageNum
+        ? this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].all[index]]
+          .imageNum
+        : this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].imageNum
     }full.jpg`;
     img.onload = () => {
       element.style.backgroundImage = `url(${img.src})`;
     };
   }
 
-  addPictureNameAttribute(element, index) {
+  addPictureId(element, index) {
     element.setAttribute(
-      'data-picture-name',
+      'data-picture-id',
       `${
         this.model.location.type === this.model.quiz.types.picture
-          ? this.model.answers[this.model.location.pageNum].all[index].picture[
-            this.model.config.settings.lang
-          ]
-          : this.model.answers[this.model.location.pageNum].true.picture[
-            this.model.config.settings.lang
-          ]
+          ? this.model.answers[this.model.location.pageNum].all[index].picture
+          : this.model.answers[this.model.location.pageNum].true.picture
       }`,
     );
   }
@@ -331,22 +331,13 @@ export default class Controller {
       this.view.showModalWindow(e.target.classList.contains('true'));
     });
   }
-
+// ENDED REFACTOR ON THIS FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   markTrueAnswer() {
     this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       if (
-        // eslint-disable-next-line operator-linebreak
-        element.textContent ===
-          // eslint-disable-next-line operator-linebreak
-          this.model.answers[this.model.location.pageNum].true[element.classList[0]][
-            this.model.config.settings.lang
-            // eslint-disable-next-line operator-linebreak
-          ] ||
-        // eslint-disable-next-line operator-linebreak
-        element.getAttribute('data-picture-name') ===
-          this.model.answers[this.model.location.pageNum].true[element.classList[0]][
-            this.model.config.settings.lang
-          ]
+        element.textContent === this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true ||
+        element.getAttribute('data-picture-id') ===
+          this.model.answers[this.model.location.pageNum].true
       ) {
         element.classList.add('true');
         this.view.trueElement = element;

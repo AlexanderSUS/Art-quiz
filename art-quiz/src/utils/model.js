@@ -49,21 +49,21 @@ export default class Model {
   }
 
   getDataByArtist() {
-    return this.quiz.images.list.slice(
+    return [
       this.location.categoryId * this.quiz.questions.perCategory,
       this.location.categoryId * this.quiz.questions.perCategory + this.quiz.questions.perCategory,
-    );
+    ];
   }
 
   getDataByPicture() {
-    return this.quiz.images.list.slice(
+    return [
       this.quiz.questions.perType + this.location.categoryId * this.quiz.questions.perCategory,
       // eslint-disable-next-line operator-linebreak
       this.quiz.questions.perType +
         // eslint-disable-next-line operator-linebreak
         this.location.categoryId * this.quiz.questions.perCategory +
         this.quiz.questions.perCategory,
-    );
+    ];
   }
 
   getData() {
@@ -73,7 +73,13 @@ export default class Model {
   }
 
   getAnswers() {
-    this.answers = this.getData().map((element) => {
+    const range = this.getData();
+    const listOfData = [];
+    for (let i = range[0], j = 0; i < range[1]; i++, j++) {
+      listOfData[j] = i;
+    }
+
+    this.answers = listOfData.map((element) => {
       const answer = {
         true: element,
         false: [],
