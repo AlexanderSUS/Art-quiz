@@ -1,7 +1,26 @@
+import {
+  CATEGORIES_PAGE,
+  IMAGE_URL_FULL,
+  IMAGE_URL_SMALL,
+  LANG_RU,
+  PICTURE_QUIZ,
+  QUESTIONNS_PAGE,
+  QUESTION_PER_CATEGORY,
+  RATING_CONGRATS,
+  RATING_GAMEOVER,
+  RATING_GRAND,
+  RESULT_CONGRATS,
+  RESULT_GRAND,
+  SETTINGS_PAGE,
+} from '../const';
+
 export default class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
+    this.lang = model.config.settings.lang;
+    this.imagesList = model.quiz.images;
+    this.quizDictionary = model.quiz.dictionary;
   }
 
   init() {
@@ -40,14 +59,15 @@ export default class Controller {
 
   pageProcessor() {
     this.view.toggleHomePageStyle(this.view.currentPage);
-    if (this.model.location.page === Object.keys(this.view.pages)[1]) {
+
+    if (this.model.location.page === SETTINGS_PAGE) {
       this.setSettingsTitles();
-    } else if (this.model.location.page === Object.keys(this.view.pages)[2]) {
+    } else if (this.model.location.page === CATEGORIES_PAGE) {
       this.view.cleanPreviousCategories();
       this.fillCategoryPage();
-    } else if (this.model.location.pageNum > this.model.quiz.questions.perCategory - 1) {
+    } else if (this.model.location.pageNum > QUESTION_PER_CATEGORY - 1) {
       document.location.hash = '#home';
-    } else if (this.model.location.page === Object.keys(this.view.pages)[3]) {
+    } else if (this.model.location.page === QUESTIONNS_PAGE) {
       this.fillQuestionPage();
     }
     this.fillNavButtonsText();
@@ -65,13 +85,14 @@ export default class Controller {
 
     this.model.quiz.categories.forEach((element, index) => {
       const img = new Image();
-      img.src = `${this.model.quiz.images.url.small}${element.cover[this.model.location.type]}.jpg`;
+      img.src = `${IMAGE_URL_SMALL}${element.cover[this.model.location.type]}.jpg`;
 
       // eslint-disable-next-line operator-linebreak
       titles[index].textContent =
-        this.model.quiz.dictionary[this.model.config.settings.lang].categories[
+        this.quizDictionary[this.lang].categories[
           Object.keys(this.model.quiz.categories[index])[0]
         ];
+
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
       if (!this.model.config.results[this.model.location.type][index].every(isNull)) {
@@ -90,8 +111,7 @@ export default class Controller {
         resultBtn.setAttribute('href', `#results=${this.model.location.type}=${index}`);
         resultBtn.classList.add('category-result-btn');
         // eslint-disable-next-line operator-linebreak
-        resultBtn.textContent =
-          this.model.quiz.dictionary[this.model.config.settings.lang].titles.results;
+        resultBtn.textContent = this.quizDictionary[this.lang].titles.results;
         imageContainer[index].appendChild(resultBtn);
 
         img.onload = () => {
@@ -111,8 +131,7 @@ export default class Controller {
     const buttons = this.view.currentPage.querySelectorAll('.nav-btn');
     buttons.forEach((btn) => {
       // eslint-disable-next-line operator-linebreak
-      btn.textContent =
-        this.model.quiz.dictionary[this.model.config.settings.lang].buttons[btn.classList[0]];
+      btn.textContent = this.quizDictionary[this.lang].buttons[btn.classList[0]];
     });
   }
 
@@ -132,25 +151,23 @@ export default class Controller {
   }
 
   fillModal() {
-    this.view.currentModalWindow.querySelector('.modal-image').style.backgroundImage = `url(${
-      this.model.quiz.images.url.full
-    }${this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true]}full.jpg)`;
+    this.view.currentModalWindow.querySelector(
+      '.modal-image',
+    ).style.backgroundImage = `url(${IMAGE_URL_FULL}${
+      this.imagesList[this.model.answers[this.model.location.pageNum].true]
+    }full.jpg)`;
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-picture-name').textContent =
-      this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].picture[
-        this.model.config.settings.lang
-      ];
+      this.imagesList[this.model.answers[this.model.location.pageNum].true].picture[this.lang];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-author').textContent =
-      this.model.quiz.imgaes.list[this.model.answers[this.model.location.pageNum].true].author[
-        this.model.config.settings.lang
-      ];
+      this.imagesList[this.model.answers[this.model.location.pageNum].true].author[this.lang];
 
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.modal-year').textContent =
-      this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].year;
+      this.imagesList[this.model.answers[this.model.location.pageNum].true].year;
   }
 
   fillEndOfGameModal() {
@@ -170,15 +187,14 @@ export default class Controller {
         'href',
         `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
       );
-      varyBtn.textContent = this.model.quiz.dictionary[this.model.config.lang].buttons.nextQuiz;
+      varyBtn.textContent = this.quizDictionary[this.model.config.lang].buttons.nextQuiz;
     } else {
       varyBtn.setAttribute(
         'href',
         `#questions=${this.model.location.type}=${this.model.location.categoryId}=0`,
       );
       // eslint-disable-next-line operator-linebreak
-      varyBtn.textContent =
-        this.model.quiz.dictionary[this.model.config.settings.lang].buttons.playAgain;
+      varyBtn.textContent = this.quizDictionary[this.lang].buttons.playAgain;
     }
   }
 
@@ -207,13 +223,15 @@ export default class Controller {
   }
 
   getRating(result) {
-    if (result[this.model.location.categoryId] === this.model.quiz.questions.results.grand) {
-      return this.model.quiz.rating.grand;
+    if (result[this.model.location.categoryId] === RESULT_GRAND) {
+      return RATING_GRAND;
     }
-    if (result[this.model.location.categoryId] < this.model.quiz.questions.results.congrats) {
-      return this.model.quiz.rating.gameover;
+
+    if (result[this.model.location.categoryId] < RESULT_CONGRATS) {
+      return RATING_GAMEOVER;
     }
-    return this.model.quiz.rating.congrats;
+
+    return RATING_CONGRATS;
   }
 
   setEndOfGamePicture(result) {
@@ -225,7 +243,7 @@ export default class Controller {
   setEndOfGameTitle(result) {
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow.querySelector('.end-of-game-title').textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].titles[result];
+      this.quizDictionary[this.lang].titles[result];
   }
 
   setRouteToBackBnts() {
@@ -264,9 +282,7 @@ export default class Controller {
   insertQuestion() {
     // eslint-disable-next-line operator-linebreak
     this.view.currentPage.querySelector('h4').textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].question[
-        this.model.location.type
-      ];
+      this.quizDictionary[this.lang].question[this.model.location.type];
   }
 
   insertPictures() {
@@ -282,8 +298,9 @@ export default class Controller {
       if (targets[i].textContent.includes('__artist__')) {
         targets[i].textContent = targets[i].textContent.replace(
           '__artist__',
-          this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].all[j++]]
-            .author[this.model.config.settings.lang],
+          this.imagesList[this.model.answers[this.model.location.pageNum].all[j++]].author[
+            this.lang
+          ],
         );
       }
     }
@@ -291,11 +308,10 @@ export default class Controller {
 
   addPicture(element, index) {
     const img = new Image();
-    img.src = `${this.model.quiz.images.url.full}${
-      this.model.location.type === this.model.quiz.types.picture
-        ? this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].all[index]]
-          .imageNum
-        : this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true].imageNum
+    img.src = `${IMAGE_URL_FULL}${
+      PICTURE_QUIZ
+        ? this.imagesList[this.model.answers[this.model.location.pageNum].all[index]].imageNum
+        : this.imagesList[this.model.answers[this.model.location.pageNum].true].imageNum
     }full.jpg`;
     img.onload = () => {
       element.style.backgroundImage = `url(${img.src})`;
@@ -331,13 +347,15 @@ export default class Controller {
       this.view.showModalWindow(e.target.classList.contains('true'));
     });
   }
-// ENDED REFACTOR ON THIS FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  // ENDED REFACTOR ON THIS FUNCTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   markTrueAnswer() {
     this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       if (
-        element.textContent === this.model.quiz.images.list[this.model.answers[this.model.location.pageNum].true ||
-        element.getAttribute('data-picture-id') ===
-          this.model.answers[this.model.location.pageNum].true
+        element.textContent ===
+          this.imagesList[this.model.answers[this.model.location.pageNum].true]
+        || element.getAttribute('data-picture-id')
+          === this.model.answers[this.model.location.pageNum].true
       ) {
         element.classList.add('true');
         this.view.trueElement = element;
@@ -348,21 +366,21 @@ export default class Controller {
   setSettingsTitles() {
     // eslint-disable-next-line operator-linebreak
     document.querySelector('.lang-title').textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.language;
+      this.quizDictionary[this.lang].buttons.language;
     // eslint-disable-next-line operator-linebreak
     document.querySelector('.time-check-title').textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.timeGame;
+      this.quizDictionary[this.lang].buttons.timeGame;
     // eslint-disable-next-line operator-linebreak
     document.querySelector('.time-value-title').textContent =
-      this.model.quiz.dictionary[this.model.config.settings.lang].buttons.timeToAnswer;
+      this.quizDictionary[this.lang].buttons.timeToAnswer;
   }
 
   switchLanguage() {
     this.view.pages.settings.querySelector('#lang-check').addEventListener('change', (e) => {
       if (e.target.checked) {
-        this.model.config.settings.lang = this.model.quiz.language.ru;
+        this.lang = this.model.quiz.language.ru;
       } else {
-        this.model.config.settings.lang = this.model.quiz.language.en;
+        this.lang = this.model.quiz.language.en;
       }
       this.setSettingsTitles();
       this.fillNavButtonsText();
@@ -372,7 +390,6 @@ export default class Controller {
 
   loadSettings() {
     // eslint-disable-next-line operator-linebreak
-    this.view.pages.settings.querySelector('#lang-check').checked =
-      this.model.config.settings.lang === this.model.quiz.language.ru;
+    this.view.pages.settings.querySelector('#lang-check').checked = this.lang === LANG_RU;
   }
 }

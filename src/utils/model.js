@@ -1,3 +1,5 @@
+import { ARTIST_QUIZ } from '../const';
+
 export default class Model {
   constructor(quiz) {
     this.quiz = quiz;
@@ -39,13 +41,8 @@ export default class Model {
   }
 
   getLocation() {
-    const hash = document.location.hash.slice(1).split('=');
-    this.location = {
-      page: hash[0],
-      type: hash[1],
-      categoryId: hash[2],
-      pageNum: hash[3],
-    };
+    const [page, type, categoryId, pageNum] = document.location.hash.slice(1).split('=');
+    this.location = { page, type, categoryId, pageNum };
   }
 
   getDataByArtist() {
@@ -67,9 +64,7 @@ export default class Model {
   }
 
   getData() {
-    return this.location.type === this.quiz.types.artist
-      ? this.getDataByArtist()
-      : this.getDataByPicture();
+    return this.location.type === ARTIST_QUIZ ? this.getDataByArtist() : this.getDataByPicture();
   }
 
   getAnswers() {
@@ -89,7 +84,7 @@ export default class Model {
         const variant = Math.floor(Math.random() * this.quiz.questions.total);
 
         if (!answer.all.includes(variant)) {
-          answer.false[answer.false.length] = this.quiz.images.list[variant];
+          answer.false[answer.false.length] = this.quiz.images[variant];
           answer.all[answer.false.length] = answer.false[answer.false.length - 1];
         }
       }
