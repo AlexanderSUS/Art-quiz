@@ -1,11 +1,7 @@
-import {
-  ART_QUIZ_CONFIG,
-  FALSE_ANSWERS_NUM,
-  LANG_RU,
-  QUESTIONS_PER_CATEGORY,
-  QUESTIONS_TOTAL,
-} from '../const';
-import getQuestionsRange from '../helpers/getQuestionsRange';
+import { ART_QUIZ_CONFIG, LANG_RU, QUESTIONS_PER_CATEGORY } from '../const';
+import createAnswers from '../helpers/createAnswers';
+import getQuestionStartPosition from '../helpers/getQuestionsRange';
+import shuffleAnswers from '../helpers/shuffleAnswers';
 import categories from './categories';
 import images from './images';
 
@@ -51,46 +47,21 @@ export default class Model {
   }
 
   getAnswers() {
-    const [rangeStart, rangeEnd] = getQuestionsRange(this.location.type, this.location.categoryId);
+    const { type, categoryId } = this.location;
+    const questionStartPosition = getQuestionStartPosition(type, categoryId);
 
-    const answers = [];
-
-    let pictureNumber = rangeStart;
-
-    while (pictureNumber !== rangeEnd) {
-      answers.push({
-        true: images[pictureNumber],
-        false: [],
-        all: [images[pictureNumber]],
-      });
-
-      pictureNumber++;
-    }
-
-    answers.map((answer) => {
-      while (answer.false.length < FALSE_ANSWERS_NUM) {
-        const variant = Math.floor(Math.random() * QUESTIONS_TOTAL);
-
-        if (!answer.all.includes(variant)) {
-          answer.false.push(images[variant]);
-          answer.all.push(images[variant]);
-        }
-      }
-
-      return answer;
+    this.answers = Array(QUESTIONS_PER_CATEGORY).fill({
+      true: null,
+      false: [],
+      all: [],
     });
 
-    this.answers = answers;
-  }
+    this.answers.forEach((answer, index) => {
+      const [trueAnswerNum, ...falseAnswers] = createAnswers(questionStartPosition + index);
 
-  shuffleAnswers() {
-    this.answers.forEach((element) => {
-      for (let i = element.all.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * i);
-        const k = element.all[i];
-        element.all[i] = element.all[j];
-        element.all[j] = k;
-      }
+      answer.true = images[trueAnswerNum];
+      answer.false = falseAnswers.map((falseAnswerNum) => images[falseAnswerNum]);
+      answer.all = shuffleAnswers([answer.true, ...answer.false]);
     });
   }
 

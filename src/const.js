@@ -26,5 +26,6 @@ export const QUESTIONS_PER_CATEGORY = 10;
 export const QUESTIONS_PER_QUIZ_TYPE = 120;
 export const QUESTIONS_TOTAL = 240;
 export const FALSE_ANSWERS_NUM = 3;
+export const TOTAL_ANSWERS_NUM = 4;
 
 export const ART_QUIZ_CONFIG = 'art-quiz-config';

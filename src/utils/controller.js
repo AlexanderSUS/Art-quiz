@@ -142,7 +142,6 @@ export default class Controller {
     this.view.cleanPreviousAnswers();
     this.view.hideModalwindow();
     this.model.getAnswers();
-    this.model.shuffleAnswers();
     this.setRouteToBackBnts();
     this.insertQuestion();
     this.appendAnswersContainer();
