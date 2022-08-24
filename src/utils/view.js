@@ -25,7 +25,7 @@ export default class View {
 
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
-    if (typeof variants !== 'undefined' && variants != null) {
+    if (typeof variants !== 'undefined' && variants !== null) {
       this.repairAnswerTemplate();
       this.clearAnswerClasses();
       this.pages.questions.removeChild(variants);

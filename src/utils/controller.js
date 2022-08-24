@@ -153,23 +153,17 @@ export default class Controller {
   }
 
   fillModal() {
-    this.view.currentModalWindow.querySelector(
+    const { currentModalWindow } = this.view;
+    const { answers, location } = this.model;
+    const { author, imageNum, picture, year } = answers[location.pageNum].true;
+
+    currentModalWindow.querySelector(
       '.modal-image',
-    ).style.backgroundImage = `url(${IMAGE_URL_FULL}${
-      images[this.model.answers[this.model.location.pageNum].true]
-    }full.jpg)`;
+    ).style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
 
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentModalWindow.querySelector('.modal-picture-name').textContent =
-      images[this.model.answers[this.model.location.pageNum].true].picture[this.lang];
-
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentModalWindow.querySelector('.modal-author').textContent =
-      images[this.model.answers[this.model.location.pageNum].true].author[this.lang];
-
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentModalWindow.querySelector('.modal-year').textContent =
-      images[this.model.answers[this.model.location.pageNum].true].year;
+    currentModalWindow.querySelector('.modal-picture-name').textContent = picture[this.lang];
+    currentModalWindow.querySelector('.modal-author').textContent = author[this.lang];
+    currentModalWindow.querySelector('.modal-year').textContent = year;
   }
 
   fillEndOfGameModal() {
@@ -324,9 +318,10 @@ export default class Controller {
 
     const answers = this.model.answers[this.model.location.pageNum];
 
-    const imageNum = this.model.location.type === PICTURE_QUIZ
-        ? answers.all[index].imageNum
-        : answers.true.imageNum;
+    const imageNum =
+      this.model.location.type === PICTURE_QUIZ
+      ? answers.all[index].imageNum
+      : answers.true.imageNum;
 
     img.src = `${IMAGE_URL_FULL}${imageNum}full.jpg`;
 
@@ -338,8 +333,7 @@ export default class Controller {
   addPictureId(element, index) {
     const answers = this.model.answers[this.model.location.pageNum];
     const quizType = this.model.location.type;
-    const pictureId =
-      quizType === PICTURE_QUIZ ? answers.all[index].imageNum : answers.true.imageNum;
+    const pictureId =      quizType === PICTURE_QUIZ ? answers.all[index].imageNum : answers.true.imageNum;
 
     element.setAttribute('data-picture-id', pictureId);
   }
@@ -366,9 +360,9 @@ export default class Controller {
   markTrueAnswer() {
     this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       if (
-        element.textContent === images[this.model.answers[this.model.location.pageNum].true] ||
-        element.getAttribute('data-picture-id') ===
-          this.model.answers[this.model.location.pageNum].true
+        element.textContent === images[this.model.answers[this.model.location.pageNum].true]
+        || element.getAttribute('data-picture-id')
+          === this.model.answers[this.model.location.pageNum].true
       ) {
         element.classList.add('true');
         this.view.trueElement = element;
