@@ -1,6 +1,5 @@
 class Quiz {
-  constructor(images, dictionary, categories) {
-    this.categories = categories;
+  constructor() {
     this.questions = {
       total: 240,
       perType: 120,
@@ -22,9 +21,6 @@ class Quiz {
       min: 0,
       max: 100,
     };
-    this.images = images;
-    this.dictionary = dictionary;
-    this.config = 'quiz-config';
   }
 }
 

@@ -1,43 +1,48 @@
-import { ARTIST_QUIZ } from '../const';
+import {
+  ART_QUIZ_CONFIG,
+  FALSE_ANSWERS_NUM,
+  LANG_RU,
+  QUESTIONS_PER_CATEGORY,
+  QUESTIONS_TOTAL,
+} from '../const';
+import getQuestionsRange from '../helpers/getQuestionsRange';
+import categories from './categories';
+import images from './images';
 
 export default class Model {
   constructor(quiz) {
     this.quiz = quiz;
     this.location = null;
     this.answers = null;
-    this.config = JSON.parse(localStorage.getItem('art-quiz-config')) || {
+    this.config = JSON.parse(localStorage.getItem(ART_QUIZ_CONFIG)) || {
       settings: {
-        lang: 'ru',
+        lang: LANG_RU,
       },
       results: {
-        artist: new Array(this.quiz.categories.length)
+        artist: new Array(categories.length)
           .fill(null)
-          .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
-        picture: new Array(this.quiz.categories.length)
+          .map(() => new Array(QUESTIONS_PER_CATEGORY).fill(null)),
+        picture: new Array(categories.length)
           .fill(null)
-          .map(() => new Array(this.quiz.questions.perCategory).fill(null)),
+          .map(() => new Array(QUESTIONS_PER_CATEGORY).fill(null)),
       },
     };
   }
 
   saveConfig() {
-    const config = JSON.stringify(this.config);
-    localStorage.setItem('art-quiz-config', config);
+    localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.config));
   }
 
   getResults() {
     const reducer = (previousValue, currentValue) => previousValue + currentValue;
 
-    return this.config.results[this.location.type].map((element) => {
-      const rate = element.reduce(reducer);
-      return rate;
-    });
+    return this.config.results[this.location.type].map((element) => element.reduce(reducer));
   }
 
   pickResult(result) {
-    // eslint-disable-next-line operator-linebreak
-    this.config.results[this.location.type][this.location.categoryId][this.location.pageNum] =
-      result;
+    const { categoryId, pageNum, type: quizType } = this.location;
+
+    this.config.results[quizType][categoryId][pageNum] = result;
   }
 
   getLocation() {
@@ -45,51 +50,37 @@ export default class Model {
     this.location = { page, type, categoryId, pageNum };
   }
 
-  getDataByArtist() {
-    return [
-      this.location.categoryId * this.quiz.questions.perCategory,
-      this.location.categoryId * this.quiz.questions.perCategory + this.quiz.questions.perCategory,
-    ];
-  }
-
-  getDataByPicture() {
-    return [
-      this.quiz.questions.perType + this.location.categoryId * this.quiz.questions.perCategory,
-      // eslint-disable-next-line operator-linebreak
-      this.quiz.questions.perType +
-        // eslint-disable-next-line operator-linebreak
-        this.location.categoryId * this.quiz.questions.perCategory +
-        this.quiz.questions.perCategory,
-    ];
-  }
-
-  getData() {
-    return this.location.type === ARTIST_QUIZ ? this.getDataByArtist() : this.getDataByPicture();
-  }
-
   getAnswers() {
-    const range = this.getData();
-    const listOfData = [];
-    for (let i = range[0], j = 0; i < range[1]; i++, j++) {
-      listOfData[j] = i;
+    const [rangeStart, rangeEnd] = getQuestionsRange(this.location.type, this.location.categoryId);
+
+    const answers = [];
+
+    let pictureNumber = rangeStart;
+
+    while (pictureNumber !== rangeEnd) {
+      answers.push({
+        true: images[pictureNumber],
+        false: [],
+        all: [images[pictureNumber]],
+      });
+
+      pictureNumber++;
     }
 
-    this.answers = listOfData.map((element) => {
-      const answer = {
-        true: element,
-        false: [],
-        all: [element],
-      };
-      while (answer.false.length < this.quiz.questions.answers.false) {
-        const variant = Math.floor(Math.random() * this.quiz.questions.total);
+    answers.map((answer) => {
+      while (answer.false.length < FALSE_ANSWERS_NUM) {
+        const variant = Math.floor(Math.random() * QUESTIONS_TOTAL);
 
         if (!answer.all.includes(variant)) {
-          answer.false[answer.false.length] = this.quiz.images[variant];
-          answer.all[answer.false.length] = answer.false[answer.false.length - 1];
+          answer.false.push(images[variant]);
+          answer.all.push(images[variant]);
         }
       }
+
       return answer;
     });
+
+    this.answers = answers;
   }
 
   shuffleAnswers() {
@@ -104,6 +95,6 @@ export default class Model {
   }
 
   isLastQuestion() {
-    return +this.location.pageNum === this.quiz.questions.perCategory - 1;
+    return +this.location.pageNum === QUESTIONS_PER_CATEGORY - 1;
   }
 }
