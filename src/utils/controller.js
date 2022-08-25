@@ -315,11 +315,8 @@ export default class Controller {
   }
 
   changeCurrentModalWindow() {
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentModalWindow =
-      this.view.currentModalWindow === this.view.components.modal
-        ? this.view.components.modalEndOfGame
-        : this.view.components.modal;
+    const { modalEndOfGame, modal } = this.view.components;
+    this.view.currentModalWindow = this.view.currentModalWindow === modal ? modalEndOfGame : modal;
   }
 
   higthLightAnswers(button) {
