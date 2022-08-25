@@ -44,8 +44,8 @@ export default class Model {
     const falseImages = falseAnswers.map((falseAnswerNum) => images[falseAnswerNum]);
 
     this.answers = {
-      true: images[trueAnswerNum],
-      false: falseImages,
+      trueAnswer: images[trueAnswerNum],
+      falseAnswers: falseImages,
       all: shuffleAnswers([images[trueAnswerNum], ...falseImages]),
     };
   }

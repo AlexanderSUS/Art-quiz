@@ -156,7 +156,7 @@ export default class Controller {
 
   fillModal() {
     const { currentModalWindow } = this.view;
-    const { author, imageNum, picture, year } = this.model.answers.true;
+    const { author, imageNum, picture, year } = this.model.answers.trueAnswer;
 
     currentModalWindow.querySelector(
       '.modal-image',
@@ -292,7 +292,7 @@ export default class Controller {
 
   insertAuthors() {
     const [header, ...answers] = Array.from(this.view.currentPage.querySelectorAll('.artist'));
-    const trueAuthor = this.model.answers.true.author[this.lang];
+    const trueAuthor = this.model.answers.trueAnswer.author[this.lang];
 
     if (this.model.location.type === PICTURE_QUIZ) {
       header.textContent = header.textContent.replace('__artist__', trueAuthor);
@@ -310,10 +310,9 @@ export default class Controller {
 
     const answers = this.model.answers;
 
-    const imageNum =
-      this.model.location.type === PICTURE_QUIZ
+    const imageNum = this.model.location.type === PICTURE_QUIZ
       ? answers.all[index].imageNum
-      : answers.true.imageNum;
+      : answers.trueAnswer.imageNum;
 
     img.src = `${IMAGE_URL_FULL}${imageNum}full.jpg`;
 
@@ -323,9 +322,9 @@ export default class Controller {
   }
 
   addPictureId(element, index) {
-    const answers = this.model.answers;
+    const { trueAnswer, all } = this.model.answers;
     const quizType = this.model.location.type;
-    const pictureId =      quizType === PICTURE_QUIZ ? answers.all[index].imageNum : answers.true.imageNum;
+    const pictureId = quizType === PICTURE_QUIZ ? all[index].imageNum : trueAnswer.imageNum;
 
     element.setAttribute('data-picture-id', pictureId);
   }
@@ -352,8 +351,8 @@ export default class Controller {
   markTrueAnswer() {
     this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       if (
-        element.textContent === images[this.model.answers.true]
-        || element.getAttribute('data-picture-id') === this.model.answers.true
+        element.textContent === images[this.model.answers.trueAnswer] ||
+        element.getAttribute('data-picture-id') === this.model.answers.trueAnswer
       ) {
         element.classList.add('true');
         this.view.trueElement = element;
