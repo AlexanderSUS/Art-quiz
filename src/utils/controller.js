@@ -84,13 +84,13 @@ export default class Controller {
       const img = new Image();
       const [genre] = Object.keys(categories[index]);
 
-      img.src = `${IMAGE_URL_SMALL}${element.cover[this.model.location.type]}.jpg`;
+      img.src = `${IMAGE_URL_SMALL}${element.cover[this.model.location.quizType]}.jpg`;
 
       titles[index].textContent = dictionaryCategories[genre];
 
-      links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
+      links[index].setAttribute('href', `#questions=${this.model.location.quizType}=${index}=0`);
 
-      if (!this.model.state.results[this.model.location.type][index].every(isNull)) {
+      if (!this.model.state.results[this.model.location.quizType][index].every(isNull)) {
         cards[index].classList.add('played');
 
         links[index].style.backgroundImage = 'url(/assets/replay.svg)';
@@ -103,7 +103,7 @@ export default class Controller {
 
         /* create reusult btn */
         const resultBtn = document.createElement('a');
-        resultBtn.setAttribute('href', `#results=${this.model.location.type}=${index}`);
+        resultBtn.setAttribute('href', `#results=${this.model.location.quizType}=${index}`);
         resultBtn.classList.add('category-result-btn');
         resultBtn.textContent = dictionary[this.lang].titles.results;
         imageContainer[index].appendChild(resultBtn);
@@ -171,21 +171,21 @@ export default class Controller {
     if (results[this.model.location.categoryId] > RESULT_GAMEOVER) {
       varyBtn.setAttribute(
         'href',
-        `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
+        `#questions=${this.model.location.quizType}=${this.model.location.categoryId + 1}=0`,
       );
 
       varyBtn.textContent = dictionary[this.model.state.lang].buttons.nextQuiz;
     } else {
       varyBtn.setAttribute(
         'href',
-        `#questions=${this.model.location.type}=${this.model.location.categoryId}=0`,
+        `#questions=${this.model.location.quizType}=${this.model.location.categoryId}=0`,
       );
       varyBtn.textContent = dictionary[this.lang].buttons.playAgain;
     }
   }
 
   appendAnswersContainer() {
-    this.view.currentPage.appendChild(this.view.components.answers[this.model.location.type]);
+    this.view.currentPage.appendChild(this.view.components.answers[this.model.location.quizType]);
   }
 
   setAnswerListener() {
@@ -235,7 +235,7 @@ export default class Controller {
 
   setRouteToBackBnts() {
     this.view.currentPage.querySelectorAll('.back-btn, .modal-back-btn').forEach((element) => {
-      element.setAttribute('href', `#categories=${this.model.location.type}`);
+      element.setAttribute('href', `#categories=${this.model.location.quizType}`);
     });
   }
 
@@ -244,7 +244,7 @@ export default class Controller {
       .querySelector('.modal-next-btn')
       .setAttribute(
         'href',
-        `#questions=${this.model.location.type}=${this.model.location.categoryId}=${
+        `#questions=${this.model.location.quizType}=${this.model.location.categoryId}=${
           this.model.location.pageNum < QUESTIONS_PER_CATEGORY
             ? +this.model.location.pageNum + 1
             : this.model.location.pageNum
@@ -267,14 +267,14 @@ export default class Controller {
   }
 
   insertQuestion() {
-    const { type: quizType } = this.model.location;
+    const { quizType } = this.model.location;
     const question = dictionary[this.lang].question[quizType];
 
     this.view.currentPage.querySelector('h4').textContent = question;
   }
 
   insertPictures() {
-    const { type: quizType } = this.model.location;
+    const { quizType } = this.model.location;
     const { answers } = this.model;
     const pictures = this.view.currentPage.querySelectorAll('.picture');
 
@@ -292,7 +292,7 @@ export default class Controller {
     const [header, ...answers] = Array.from(this.view.currentPage.querySelectorAll('.artist'));
     const trueAuthor = this.model.answers.trueAnswer.author[this.lang];
 
-    if (this.model.location.type === PICTURE_QUIZ) {
+    if (this.model.location.quizType === PICTURE_QUIZ) {
       header.textContent = header.textContent.replace('__artist__', trueAuthor);
 
       return;

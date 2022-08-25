@@ -20,24 +20,25 @@ export default class Model {
   getResults() {
     const reducer = (previousValue, currentValue) => previousValue + currentValue;
 
-    return this.state.results[this.location.type].map((element) => element.reduce(reducer));
+    return this.state.results[this.location.quizType].map((element) => element.reduce(reducer));
   }
 
   pickResult(result) {
-    const { categoryId, pageNum, type: quizType } = this.location;
+    const { categoryId, pageNum, quizType } = this.location;
 
     this.state.results[quizType][categoryId][pageNum] = result;
   }
 
   setLocation() {
-    const [page, type, categoryId, pageNum] = document.location.hash.slice(1).split('=');
-    this.location = { page, type, categoryId, pageNum };
+    const [page, quizType, categoryId, pageNum] = document.location.hash.slice(1).split('=');
+    this.location = { page, quizType, categoryId, pageNum };
   }
 
   getAnswers() {
-    const { type, categoryId, pageNum } = this.location;
+    const { quizType, categoryId, pageNum } = this.location;
 
-    const questionStartPosition = getQuestionStartPosition(type, categoryId) + parseInt(pageNum);
+    const questionStartPosition =
+      getQuestionStartPosition(quizType, categoryId) + parseInt(pageNum);
 
     const [trueAnswerNum, ...falseAnswers] = createAnswers(questionStartPosition);
 

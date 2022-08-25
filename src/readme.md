@@ -33,7 +33,7 @@ pageProcessor() ->
 
 
 
-  ('.back-btn') .setAttribute('href', `#categories=${this.model.location.type}`)   
+  ('.back-btn') .setAttribute('href', `#categories=${this.model.location.quizType}`)   
 
 
 
