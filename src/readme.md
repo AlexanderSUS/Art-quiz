@@ -1,7 +1,7 @@
 onload ->
 on hashchange ->
 
-getLocation() = /#page /type /categoryId /pageNum ->
+setLocation() = /#page /type /categoryId /pageNum ->
 
 pageChanger() = REMOVE currentPage && ADD newPage ->
 

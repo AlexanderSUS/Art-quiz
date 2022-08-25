@@ -29,7 +29,7 @@ export default class Model {
     this.state.results[quizType][categoryId][pageNum] = result;
   }
 
-  getLocation() {
+  setLocation() {
     const [page, type, categoryId, pageNum] = document.location.hash.slice(1).split('=');
     this.location = { page, type, categoryId, pageNum };
   }

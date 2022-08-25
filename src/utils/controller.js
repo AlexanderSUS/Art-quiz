@@ -30,8 +30,6 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
-
-      this.fillNavButtonsText();
       this.setAnswerListener();
       this.setShowEndOfGameModal();
       this.setDefaultModalWindow();
@@ -39,48 +37,39 @@ export default class Controller {
       this.switchLanguage();
 
       window.addEventListener('hashchange', () => {
+        this.model.setLocation();
+        this.view.switchPage(this.model.location.page);
         this.model.saveConfig();
-        this.model.getLocation();
         this.handleLocation();
       });
     };
   }
 
-  // **** ROUTING FUNCTIONS
-
   handleLocation() {
-    this.view.currentPage.classList.remove('active');
+    const { page } = this.model.location;
 
-    setTimeout(() => {
-      this.view.main.removeChild(this.view.currentPage);
-      this.view.currentPage = this.view.pages[this.model.location.page];
-      this.view.main.appendChild(this.view.currentPage);
-      this.pageProcessor();
+    this.view.switchPage(page);
 
-      setTimeout(() => {
-        this.view.currentPage.classList.add('active');
-      }, 300);
-    }, 300);
-  }
-
-  pageProcessor() {
-    this.view.toggleHomePageStyle(this.view.currentPage);
-
-    if (this.model.location.page === SETTINGS_PAGE) {
-      this.setSettingsTitles();
-    } else if (this.model.location.page === CATEGORIES_PAGE) {
-      this.view.cleanPreviousCategories();
-      this.fillCategoryPage();
-    } else if (this.model.location.pageNum > QUESTIONS_PER_CATEGORY - 1) {
-      document.location.hash = '#home';
-    } else if (this.model.location.page === QUESTIONNS_PAGE) {
-      this.fillQuestionPage();
+    switch (page) {
+      case SETTINGS_PAGE:
+        this.setSettingsTitles();
+        break;
+      case CATEGORIES_PAGE:
+        this.fillCategoryPage();
+        break;
+      case QUESTIONNS_PAGE:
+        this.fillQuestionPage();
+        break;
+      default:
+        document.location.hash = '#home';
     }
+
     this.fillNavButtonsText();
   }
-  // END ROUTING FUNCTIONS ****
 
   fillCategoryPage() {
+    this.view.cleanPreviousCategories();
+
     const cards = this.view.pages.categories.querySelectorAll('.card');
     const titles = this.view.pages.categories.querySelectorAll('.card-title');
     const links = this.view.pages.categories.querySelectorAll('.start-btn');

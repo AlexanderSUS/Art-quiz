@@ -1,3 +1,5 @@
+import { HOME_PAGE, SETTINGS_PAGE } from '../const';
+
 export default class View {
   constructor(pages, components) {
     this.app = document.querySelector('#root');
@@ -11,16 +13,26 @@ export default class View {
     this.app.append(this.components.header, this.main, this.components.footer);
   }
 
-  toggleHomePageStyle(element) {
-    if (element.classList.contains('at-home')) {
-      if (!this.components.header.classList.contains('at-home')) {
-        this.components.header.classList.add('at-home');
-        this.main.classList.add('at-home');
-      }
-    } else if (this.components.header.classList.contains('at-home')) {
+  switchPage(newPage) {
+    this.currentPage.classList.remove('active');
+
+    this.main.removeChild(this.currentPage);
+    this.currentPage = this.pages[newPage];
+    this.main.appendChild(this.currentPage);
+
+    // setTimeout(() => {
+    if (newPage === HOME_PAGE || newPage === SETTINGS_PAGE) {
+      this.components.header.classList.add('at-home');
+      this.main.classList.add('at-home');
+    } else {
       this.components.header.classList.remove('at-home');
       this.main.classList.remove('at-home');
     }
+
+    // setTimeout(() => {
+    this.currentPage.classList.add('active');
+    // }, 300);
+    // }, 300);
   }
 
   cleanPreviousAnswers() {
