@@ -1,5 +1,6 @@
 import dictionary from './dictionary';
 import {
+  ARTIST_QUIZ,
   CATEGORIES_PAGE,
   IMAGE_URL_FULL,
   IMAGE_URL_SMALL,
@@ -16,9 +17,8 @@ import {
   RESULT_GRAND,
   SETTINGS_PAGE,
 } from '../const';
-
-import images from './images';
 import categories from './categories';
+import addPicture from '../helpers/addPicture';
 
 export default class Controller {
   constructor(model, view) {
@@ -203,6 +203,7 @@ export default class Controller {
     this.view.components.answers.artist.querySelectorAll('.answer-btn').forEach((button) => {
       this.higthLightAnswers(button);
     });
+
     this.view.components.answers.picture.querySelectorAll('.answer-btn').forEach((button) => {
       this.higthLightAnswers(button);
     });
@@ -284,9 +285,17 @@ export default class Controller {
   }
 
   insertPictures() {
-    this.view.currentPage.querySelectorAll('.picture').forEach((element, index) => {
-      this.addPicture(element, index);
-      this.addPictureId(element, index);
+    const { type: quizType } = this.model.location;
+    const { answers } = this.model;
+    const pictures = this.view.currentPage.querySelectorAll('.picture');
+
+    if (quizType === ARTIST_QUIZ) {
+      addPicture(...pictures, answers.trueAnswer.imageNum);
+      return;
+    }
+
+    pictures.forEach((picture, index) => {
+      addPicture(picture, answers.all[index].imageNum);
     });
   }
 
@@ -305,30 +314,6 @@ export default class Controller {
     });
   }
 
-  addPicture(element, index) {
-    const img = new Image();
-
-    const answers = this.model.answers;
-
-    const imageNum = this.model.location.type === PICTURE_QUIZ
-      ? answers.all[index].imageNum
-      : answers.trueAnswer.imageNum;
-
-    img.src = `${IMAGE_URL_FULL}${imageNum}full.jpg`;
-
-    img.onload = () => {
-      element.style.backgroundImage = `url(${img.src})`;
-    };
-  }
-
-  addPictureId(element, index) {
-    const { trueAnswer, all } = this.model.answers;
-    const quizType = this.model.location.type;
-    const pictureId = quizType === PICTURE_QUIZ ? all[index].imageNum : trueAnswer.imageNum;
-
-    element.setAttribute('data-picture-id', pictureId);
-  }
-
   changeCurrentModalWindow() {
     // eslint-disable-next-line operator-linebreak
     this.view.currentModalWindow =
@@ -340,7 +325,9 @@ export default class Controller {
   higthLightAnswers(button) {
     button.addEventListener('click', (e) => {
       e.target.classList.add('picked');
+
       this.model.pickResult(e.target.classList.contains('true'));
+
       this.view.addCheckmarkToModal(e.target.classList.contains('true'));
       this.view.showTrueAnswer();
       this.fillModal();
@@ -349,15 +336,11 @@ export default class Controller {
   }
 
   markTrueAnswer() {
-    this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
-      if (
-        element.textContent === images[this.model.answers.trueAnswer] ||
-        element.getAttribute('data-picture-id') === this.model.answers.trueAnswer
-      ) {
-        element.classList.add('true');
-        this.view.trueElement = element;
-      }
-    });
+    const answerBtns = this.view.currentPage.querySelectorAll('.answer-btn');
+    const { all, trueAnswer } = this.model.answers;
+    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
+
+    answerBtns[trueAnswerIndex].classList.add('true');
   }
 
   setSettingsTitles() {
