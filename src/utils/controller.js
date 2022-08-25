@@ -256,7 +256,7 @@ export default class Controller {
       .setAttribute(
         'href',
         `#questions=${this.model.location.type}=${this.model.location.categoryId}=${
-          this.model.location.pageNum < QUESTIONS_PER_CATEGORY - 1
+          this.model.location.pageNum < QUESTIONS_PER_CATEGORY
             ? +this.model.location.pageNum + 1
             : this.model.location.pageNum
         }`,
@@ -278,7 +278,7 @@ export default class Controller {
   }
 
   insertQuestion() {
-    const { type: quizType } = this.model.location.type;
+    const { type: quizType } = this.model.location;
     const question = dictionary[this.lang].question[quizType];
 
     this.view.currentPage.querySelector('h4').textContent = question;
