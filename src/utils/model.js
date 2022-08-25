@@ -17,12 +17,6 @@ export default class Model {
     localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.state));
   }
 
-  getResults() {
-    const reducer = (previousValue, currentValue) => previousValue + currentValue;
-
-    return this.state.results[this.location.quizType].map((element) => element.reduce(reducer));
-  }
-
   pickResult(result) {
     const { categoryId, pageNum, quizType } = this.location;
 

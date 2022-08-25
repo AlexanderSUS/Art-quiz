@@ -19,6 +19,7 @@ import {
 } from '../const';
 import categories from './categories';
 import addPicture from '../helpers/addPicture';
+import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 
 export default class Controller {
   constructor(model, view) {
@@ -68,45 +69,29 @@ export default class Controller {
   }
 
   fillCategoryPage() {
+    const { quizType } = this.model.location;
+
     this.view.cleanPreviousCategories();
 
-    const cards = this.view.pages.categories.querySelectorAll('.card');
-    const titles = this.view.pages.categories.querySelectorAll('.card-title');
-    const links = this.view.pages.categories.querySelectorAll('.start-btn');
-    const titleContainer = this.view.pages.categories.querySelectorAll('.card-title-container');
     const imageContainer = this.view.pages.categories.querySelectorAll('.image-container');
-    const results = this.model.getResults();
-    const isNull = (value) => value === null;
-
+    const links = this.view.pages.categories.querySelectorAll('.start-btn');
+    const titles = this.view.pages.categories.querySelectorAll('.card-title');
+    const results = this.model.state.results[quizType];
+    const played = getIndexesOfPlayedCategories(results);
     const { categories: dictionaryCategories } = dictionary[this.lang];
 
     categories.forEach((element, index) => {
       const img = new Image();
       const [genre] = Object.keys(categories[index]);
 
-      img.src = `${IMAGE_URL_SMALL}${element.cover[this.model.location.quizType]}.jpg`;
+      img.src = `${IMAGE_URL_SMALL}${element.cover[quizType]}.jpg`;
 
       titles[index].textContent = dictionaryCategories[genre];
 
-      links[index].setAttribute('href', `#questions=${this.model.location.quizType}=${index}=0`);
+      links[index].setAttribute('href', `#questions=${quizType}=${index}=0`);
 
-      if (!this.model.state.results[this.model.location.quizType][index].every(isNull)) {
-        cards[index].classList.add('played');
-
-        links[index].style.backgroundImage = 'url(/assets/replay.svg)';
-
-        /* create score container */
-        const score = document.createElement('div');
-        score.classList.add('score');
-        score.textContent = `${results[index]}/${QUESTIONS_PER_CATEGORY}`;
-        titleContainer[index].append(score);
-
-        /* create reusult btn */
-        const resultBtn = document.createElement('a');
-        resultBtn.setAttribute('href', `#results=${this.model.location.quizType}=${index}`);
-        resultBtn.classList.add('category-result-btn');
-        resultBtn.textContent = dictionary[this.lang].titles.results;
-        imageContainer[index].appendChild(resultBtn);
+      if (played.includes(index)) {
+        this.fillPlayedCategory(index, results[index]);
 
         img.onload = () => {
           imageContainer[index].style.backgroundImage = `url(${img.src})`;
@@ -119,6 +104,27 @@ export default class Controller {
         };
       }
     });
+  }
+
+  fillPlayedCategory(categoryNum, categoryResults) {
+    const imageContainer = this.view.pages.categories.querySelectorAll('.image-container');
+    const links = this.view.pages.categories.querySelectorAll('.start-btn');
+    const cards = this.view.pages.categories.querySelectorAll('.card');
+    const score = document.querySelectorAll('.score');
+
+    cards[categoryNum].classList.add('played');
+    links[categoryNum].style.backgroundImage = 'url(/assets/replay.svg)';
+    score[categoryNum].textContent = `${
+      categoryResults.filter((element) => element === true).length
+    }/${QUESTIONS_PER_CATEGORY}`;
+
+    const resultBtn = document.createElement('a');
+    resultBtn.setAttribute('href', `#results=${this.model.location.quizType}=${categoryNum}`);
+    resultBtn.classList.add('category-result-btn');
+    resultBtn.textContent = dictionary[this.lang].titles.results;
+
+    imageContainer[categoryNum].appendChild(resultBtn);
+    imageContainer[categoryNum].style.backgroundImage = 'none';
   }
 
   fillNavButtonsText() {
