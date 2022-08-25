@@ -1,8 +1,8 @@
-import { ART_QUIZ_CONFIG, LANG_RU, QUESTIONS_PER_CATEGORY } from '../const';
+import { ART_QUIZ_CONFIG, QUESTIONS_PER_CATEGORY } from '../const';
 import createAnswers from '../helpers/createAnswers';
+import getDefaultState from '../helpers/getDefaultState';
 import getQuestionStartPosition from '../helpers/getQuestionsRange';
 import shuffleAnswers from '../helpers/shuffleAnswers';
-import categories from './categories';
 import images from './images';
 
 export default class Model {
@@ -10,35 +10,23 @@ export default class Model {
     this.quiz = quiz;
     this.location = null;
     this.answers = null;
-    this.config = JSON.parse(localStorage.getItem(ART_QUIZ_CONFIG)) || {
-      settings: {
-        lang: LANG_RU,
-      },
-      results: {
-        artist: new Array(categories.length)
-          .fill(null)
-          .map(() => new Array(QUESTIONS_PER_CATEGORY).fill(null)),
-        picture: new Array(categories.length)
-          .fill(null)
-          .map(() => new Array(QUESTIONS_PER_CATEGORY).fill(null)),
-      },
-    };
+    this.state = JSON.parse(localStorage.getItem(ART_QUIZ_CONFIG)) || getDefaultState();
   }
 
   saveConfig() {
-    localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.config));
+    localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.state));
   }
 
   getResults() {
     const reducer = (previousValue, currentValue) => previousValue + currentValue;
 
-    return this.config.results[this.location.type].map((element) => element.reduce(reducer));
+    return this.state.results[this.location.type].map((element) => element.reduce(reducer));
   }
 
   pickResult(result) {
     const { categoryId, pageNum, type: quizType } = this.location;
 
-    this.config.results[quizType][categoryId][pageNum] = result;
+    this.state.results[quizType][categoryId][pageNum] = result;
   }
 
   getLocation() {
@@ -48,21 +36,18 @@ export default class Model {
 
   getAnswers() {
     const { type, categoryId, pageNum } = this.location;
+
     const questionStartPosition = getQuestionStartPosition(type, categoryId) + parseInt(pageNum);
 
-    this.answers = Array(QUESTIONS_PER_CATEGORY).fill({
-      true: null,
-      false: [],
-      all: [],
-    });
+    const [trueAnswerNum, ...falseAnswers] = createAnswers(questionStartPosition);
 
-    this.answers.forEach((answer, index) => {
-      const [trueAnswerNum, ...falseAnswers] = createAnswers(questionStartPosition + index);
+    const falseImages = falseAnswers.map((falseAnswerNum) => images[falseAnswerNum]);
 
-      answer.true = images[trueAnswerNum];
-      answer.false = falseAnswers.map((falseAnswerNum) => images[falseAnswerNum]);
-      answer.all = shuffleAnswers([answer.true, ...answer.false]);
-    });
+    this.answers = {
+      true: images[trueAnswerNum],
+      false: falseImages,
+      all: shuffleAnswers([images[trueAnswerNum], ...falseImages]),
+    };
   }
 
   isLastQuestion() {

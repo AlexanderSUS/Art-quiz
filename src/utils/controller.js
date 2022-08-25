@@ -24,7 +24,7 @@ export default class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.lang = model.config.settings.lang;
+    this.lang = model.state.settings.lang;
   }
 
   init() {
@@ -99,7 +99,7 @@ export default class Controller {
 
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
-      if (!this.model.config.results[this.model.location.type][index].every(isNull)) {
+      if (!this.model.state.results[this.model.location.type][index].every(isNull)) {
         cards[index].classList.add('played');
 
         links[index].style.backgroundImage = 'url(/assets/replay.svg)';
@@ -154,8 +154,7 @@ export default class Controller {
 
   fillModal() {
     const { currentModalWindow } = this.view;
-    const { answers, location } = this.model;
-    const { author, imageNum, picture, year } = answers[location.pageNum].true;
+    const { author, imageNum, picture, year } = this.model.answers.true;
 
     currentModalWindow.querySelector(
       '.modal-image',
@@ -184,7 +183,7 @@ export default class Controller {
         `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
       );
 
-      varyBtn.textContent = dictionary[this.model.config.lang].buttons.nextQuiz;
+      varyBtn.textContent = dictionary[this.model.state.lang].buttons.nextQuiz;
     } else {
       varyBtn.setAttribute(
         'href',
@@ -276,9 +275,10 @@ export default class Controller {
   }
 
   insertQuestion() {
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentPage.querySelector('h4').textContent =
-      dictionary[this.lang].question[this.model.location.type];
+    const { type: quizType } = this.model.location.type;
+    const question = dictionary[this.lang].question[quizType];
+
+    this.view.currentPage.querySelector('h4').textContent = question;
   }
 
   insertPictures() {
@@ -289,35 +289,24 @@ export default class Controller {
   }
 
   insertAuthors() {
-    const targets = Array.from(this.view.currentPage.querySelectorAll('.artist'));
+    const [header, ...answers] = Array.from(this.view.currentPage.querySelectorAll('.artist'));
+    const trueAuthor = this.model.answers.true.author[this.lang];
 
     if (this.model.location.type === PICTURE_QUIZ) {
-      const text = targets[0].textContent;
-      targets[0].textContent = text.replace(
-        '__artist__',
-        this.model.answers[this.model.location.pageNum].true.author[this.lang],
-      );
+      header.textContent = header.textContent.replace('__artist__', trueAuthor);
 
       return;
     }
 
-    targets.shift();
-
-    targets.forEach((element, index) => {
-      if (element.textContent.includes('__artist__')) {
-        const text = element.textContent;
-        element.textContent = text.replace(
-          '__artist__',
-          this.model.answers[this.model.location.pageNum].all[index].author[this.lang],
-        );
-      }
+    answers.forEach((answer, index) => {
+      answer.textContent = this.model.answers.all[index].author[this.lang];
     });
   }
 
   addPicture(element, index) {
     const img = new Image();
 
-    const answers = this.model.answers[this.model.location.pageNum];
+    const answers = this.model.answers;
 
     const imageNum =
       this.model.location.type === PICTURE_QUIZ
@@ -332,7 +321,7 @@ export default class Controller {
   }
 
   addPictureId(element, index) {
-    const answers = this.model.answers[this.model.location.pageNum];
+    const answers = this.model.answers;
     const quizType = this.model.location.type;
     const pictureId =      quizType === PICTURE_QUIZ ? answers.all[index].imageNum : answers.true.imageNum;
 
@@ -361,9 +350,8 @@ export default class Controller {
   markTrueAnswer() {
     this.view.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       if (
-        element.textContent === images[this.model.answers[this.model.location.pageNum].true]
-        || element.getAttribute('data-picture-id')
-          === this.model.answers[this.model.location.pageNum].true
+        element.textContent === images[this.model.answers.true]
+        || element.getAttribute('data-picture-id') === this.model.answers.true
       ) {
         element.classList.add('true');
         this.view.trueElement = element;
