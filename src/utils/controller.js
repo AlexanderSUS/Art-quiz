@@ -89,13 +89,15 @@ export default class Controller {
     const results = this.model.getResults();
     const isNull = (value) => value === null;
 
+    const { categories: dictionaryCategories } = dictionary[this.lang];
+
     categories.forEach((element, index) => {
       const img = new Image();
+      const [genre] = Object.keys(categories[index]);
+
       img.src = `${IMAGE_URL_SMALL}${element.cover[this.model.location.type]}.jpg`;
 
-      // eslint-disable-next-line operator-linebreak
-      titles[index].textContent =
-        dictionary[this.lang].categories[Object.keys(categories[index])[0]];
+      titles[index].textContent = dictionaryCategories[genre];
 
       links[index].setAttribute('href', `#questions=${this.model.location.type}=${index}=0`);
 
@@ -107,14 +109,13 @@ export default class Controller {
         /* create score container */
         const score = document.createElement('div');
         score.classList.add('score');
-        score.textContent = `${results[index]}/10`;
+        score.textContent = `${results[index]}/${QUESTIONS_PER_CATEGORY}`;
         titleContainer[index].append(score);
 
         /* create reusult btn */
         const resultBtn = document.createElement('a');
         resultBtn.setAttribute('href', `#results=${this.model.location.type}=${index}`);
         resultBtn.classList.add('category-result-btn');
-        // eslint-disable-next-line operator-linebreak
         resultBtn.textContent = dictionary[this.lang].titles.results;
         imageContainer[index].appendChild(resultBtn);
 
@@ -133,6 +134,7 @@ export default class Controller {
 
   fillNavButtonsText() {
     const buttons = this.view.currentPage.querySelectorAll('.nav-btn');
+
     buttons.forEach((btn) => {
       btn.textContent = dictionary[this.lang].buttons[btn.classList[0]];
     });
