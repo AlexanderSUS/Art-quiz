@@ -47,8 +47,8 @@ export default class Model {
   }
 
   getAnswers() {
-    const { type, categoryId } = this.location;
-    const questionStartPosition = getQuestionStartPosition(type, categoryId);
+    const { type, categoryId, pageNum } = this.location;
+    const questionStartPosition = getQuestionStartPosition(type, categoryId) + parseInt(pageNum);
 
     this.answers = Array(QUESTIONS_PER_CATEGORY).fill({
       true: null,

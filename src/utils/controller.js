@@ -183,6 +183,7 @@ export default class Controller {
         'href',
         `#questions=${this.model.location.type}=${this.model.location.categoryId + 1}=0`,
       );
+
       varyBtn.textContent = dictionary[this.model.config.lang].buttons.nextQuiz;
     } else {
       varyBtn.setAttribute(
