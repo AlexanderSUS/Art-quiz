@@ -11,7 +11,6 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
-      this.setLangButton();
       this.switchLanguage();
 
       window.addEventListener('hashchange', () => {
@@ -73,13 +72,9 @@ export default class Controller {
     );
   }
 
-  insertQuestion() {
-    const question = dictionary[this.lang].question[this.model.location.quizType];
-
-    this.view.currentPage.querySelector('h4').textContent = question;
-  }
-
   switchLanguage() {
+    this.view.setLangButton(this.lang);
+
     this.view.pages.settings.querySelector('#lang-check').addEventListener('change', (e) => {
       this.lang = e.target.checked ? LANG_RU : LANG_EN;
 
@@ -87,10 +82,5 @@ export default class Controller {
       this.view.fillNavButtonsText(dictionary[this.lang]);
       this.model.saveConfig();
     });
-  }
-
-  // TODO move to view class
-  setLangButton() {
-    this.view.pages.settings.querySelector('#lang-check').checked = this.lang === LANG_RU;
   }
 }

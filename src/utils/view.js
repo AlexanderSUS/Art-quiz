@@ -3,6 +3,7 @@ import {
   HOME_PAGE,
   IMAGE_URL_FULL,
   IMAGE_URL_SMALL,
+  LANG_RU,
   PICTURE_QUIZ,
   QUESTIONS_PER_CATEGORY,
   RESULT_GAMEOVER,
@@ -257,6 +258,10 @@ export default class View {
     this.pages.settings.querySelector('.lang-title').textContent = language;
     this.pages.settings.querySelector('.time-check-title').textContent = timeGame;
     this.pages.settings.querySelector('.time-value-title').textContent = timeToAnswer;
+  }
+
+  setLangButton(currentLanguage) {
+    this.pages.settings.querySelector('#lang-check').checked = currentLanguage === LANG_RU;
   }
   // *** END SETTINGS ***
 
