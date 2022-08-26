@@ -13,16 +13,14 @@ export default class Controller {
       document.location.hash = '#home';
       this.switchLanguage();
 
-      window.addEventListener('hashchange', () => {
-        this.model.setLocation();
-        this.view.switchPage(this.model.location.page);
-        this.model.saveConfig();
-        this.handleLocation();
-      });
+      window.addEventListener('hashchange', this.handleLocation.bind(this));
     };
   }
 
   handleLocation() {
+    this.model.setLocation();
+    this.model.saveConfig();
+
     const { page } = this.model.location;
 
     this.view.switchPage(page);
