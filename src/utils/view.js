@@ -8,6 +8,7 @@ import {
   SETTINGS_PAGE,
 } from '../const';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
+import getRating from '../helpers/getRating';
 import categories from './categories';
 
 export default class View {
@@ -48,6 +49,12 @@ export default class View {
   fillNavButtonsText(dictionary) {
     this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
       btn.textContent = dictionary.buttons[btn.classList[0]];
+    });
+  }
+
+  setRouteToBackBnts(quizType) {
+    this.currentPage.querySelectorAll('.back-btn, .modal-back-btn').forEach((element) => {
+      element.setAttribute('href', `#categories=${quizType}`);
     });
   }
   // *** END ROUTING ***
@@ -128,6 +135,10 @@ export default class View {
   // *** END CATEGORIES ***
 
   // *** QUESTIONS ***
+
+  insertQuestion(question) {
+    this.currentPage.querySelector('h4').textContent = question;
+  }
 
   setAnswerListener(quizType, trueAnswer, saveResult, lang) {
     this.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
@@ -266,6 +277,64 @@ export default class View {
   addCheckmarkToModal(answer) {
     this.components.modal.querySelector('.modal-image').classList.remove('true', 'false');
     this.components.modal.querySelector('.modal-image').classList.add(answer);
+  }
+
+  fillEndOfGameModal(quizType, categoryId, categoryResults, dictionary) {
+    const varyBtn = this.currentModalWindow.querySelector('.modal-vary-btn');
+    const result = categoryResults.filter((res) => res === true).length;
+    const rating = getRating(result[categoryId]);
+
+    this.setEndOfGameTitle(rating, dictionary);
+    this.setEndOfGamePicture(rating);
+
+    this.currentModalWindow.querySelector(
+      '.end-of-game-score',
+    ).textContent = `${result}/${QUESTIONS_PER_CATEGORY}`;
+
+    if (result > RESULT_GAMEOVER) {
+      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId + 1}=0`);
+
+      varyBtn.textContent = dictionary.buttons.nextQuiz;
+    } else {
+      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
+      varyBtn.textContent = dictionary.buttons.playAgain;
+    }
+  }
+
+  setEndOfGamePicture(result) {
+    this.currentModalWindow.querySelector(
+      '.end-of-game-image',
+    ).style.backgroundImage = `url(./assets/${result}.svg)`;
+  }
+
+  setEndOfGameTitle(result, { titles }) {
+    this.currentModalWindow.querySelector('.end-of-game-title').textContent = titles[result];
+  }
+
+  showEndOfGameModal(quizType, categoryId, categoryResults, dictionary) {
+    this.removeModalWindow();
+    this.changeCurrentModalWindow();
+    this.fillEndOfGameModal(quizType, categoryId, categoryResults, dictionary);
+    this.appendModalWindow();
+    this.setRouteToBackBnts(quizType);
+    this.fillNavButtonsText(dictionary);
+    this.showModalWindow();
+  }
+
+  setRouteToModal(quizType, categoryId, pageNum, isLastQuestion, categoryResults, dictionary) {
+    const modalNextBtn = this.components.modal.querySelector('.modal-next-btn');
+
+    if (isLastQuestion()) {
+      modalNextBtn.addEventListener(
+        'click',
+        () => {
+          this.showEndOfGameModal.call(this, quizType, categoryId, categoryResults, dictionary);
+        },
+        { once: true },
+      );
+    } else {
+      modalNextBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=${+pageNum + 1}`);
+    }
   }
 
   // *** END MODAL ***

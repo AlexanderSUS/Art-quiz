@@ -5,8 +5,6 @@ import {
   LANG_EN,
   LANG_RU,
   QUESTIONNS_PAGE,
-  QUESTIONS_PER_CATEGORY,
-  RESULT_GAMEOVER,
   SETTINGS_PAGE,
 } from '../const';
 import addPicture from '../helpers/addPicture';
@@ -53,7 +51,6 @@ export default class Controller {
           this.model.saveResult.bind(this.model),
           this.lang,
         );
-        this.setShowEndOfGameModal();
         this.view.setDefaultModalWindow();
         break;
       default:
@@ -71,98 +68,30 @@ export default class Controller {
   }
 
   fillQuestionPage() {
+    const { quizType } = this.model.location;
+
     this.view.cleanPreviousAnswers();
     this.view.hideModalwindow();
-    this.model.getAnswers(this.model.location.quizType);
-    this.setRouteToBackBnts();
-    this.insertQuestion();
-    this.view.appendAnswersContainer(this.model.location.quizType);
+    this.model.getAnswers(quizType);
+    this.view.setRouteToBackBnts(quizType);
+    this.view.insertQuestion(dictionary[this.lang].question[quizType]);
+    this.view.appendAnswersContainer(quizType);
     this.insertPictures();
-    this.view.insertAuthors(this.model.location.quizType, this.model.answers, this.lang);
-    this.setRouteToModal();
+    this.view.insertAuthors(quizType, this.model.answers, this.lang);
+    this.view.setRouteToModal(
+      this.model.location.quizType,
+      this.model.location.categoryId,
+      this.model.location.pageNum,
+      this.model.isLastQuestion.bind(this.model),
+      this.model.state.results[this.model.location.quizType][this.model.location.categoryId],
+      dictionary[this.lang],
+    );
     this.view.markTrueAnswer(this.model.answers);
     this.view.appendModalWindow();
   }
 
-  fillEndOfGameModal() {
-    const { quizType, categoryId } = this.model.location;
-    const varyBtn = this.view.currentModalWindow.querySelector('.modal-vary-btn');
-
-    const categoryResults = this.model.state.results[quizType][categoryId];
-
-    const result = categoryResults.filter((res) => res === true).length;
-
-    const rating = this.model.getRating(result);
-
-    this.setEndOfGameTitle(rating);
-    this.setEndOfGamePicture(rating);
-
-    this.view.currentModalWindow.querySelector(
-      '.end-of-game-score',
-    ).textContent = `${result}/${QUESTIONS_PER_CATEGORY}`;
-
-    if (result > RESULT_GAMEOVER) {
-      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId + 1}=0`);
-
-      varyBtn.textContent = dictionary[this.model.state.lang].buttons.nextQuiz;
-    } else {
-      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
-      varyBtn.textContent = dictionary[this.lang].buttons.playAgain;
-    }
-  }
-
-  setEndOfGamePicture(result) {
-    this.view.currentModalWindow.querySelector(
-      '.end-of-game-image',
-    ).style.backgroundImage = `url(./assets/${result}.svg)`;
-  }
-
-  setEndOfGameTitle(result) {
-    // eslint-disable-next-line operator-linebreak
-    this.view.currentModalWindow.querySelector('.end-of-game-title').textContent =
-      dictionary[this.lang].titles[result];
-  }
-
-  setRouteToBackBnts() {
-    this.view.currentPage.querySelectorAll('.back-btn, .modal-back-btn').forEach((element) => {
-      element.setAttribute('href', `#categories=${this.model.location.quizType}`);
-    });
-  }
-
-  setRouteToModal() {
-    this.view.components.modal
-      .querySelector('.modal-next-btn')
-      .setAttribute(
-        'href',
-        `#questions=${this.model.location.quizType}=${this.model.location.categoryId}=${
-          this.model.isLastQuestion()
-            ? this.model.location.pageNum
-            : +this.model.location.pageNum + 1
-        }`,
-      );
-  }
-
-  setShowEndOfGameModal() {
-    this.view.components.modal.querySelector('.modal-next-btn').addEventListener(
-      'click',
-      () => {
-        if (this.model.isLastQuestion()) {
-          this.view.removeModalWindow();
-          this.view.changeCurrentModalWindow();
-          this.fillEndOfGameModal();
-          this.view.appendModalWindow();
-          this.setRouteToBackBnts();
-          this.view.fillNavButtonsText(dictionary[this.lang]);
-          this.view.showModalWindow();
-        }
-      },
-      { once: true },
-    );
-  }
-
   insertQuestion() {
-    const { quizType } = this.model.location;
-    const question = dictionary[this.lang].question[quizType];
+    const question = dictionary[this.lang].question[this.model.location.quizType];
 
     this.view.currentPage.querySelector('h4').textContent = question;
   }

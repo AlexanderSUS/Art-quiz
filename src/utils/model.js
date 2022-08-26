@@ -1,12 +1,4 @@
-import {
-  ART_QUIZ_CONFIG,
-  QUESTIONS_PER_CATEGORY,
-  RATING_CONGRATS,
-  RATING_GAMEOVER,
-  RATING_GRAND,
-  RESULT_CONGRATS,
-  RESULT_GRAND,
-} from '../const';
+import { ART_QUIZ_CONFIG, QUESTIONS_PER_CATEGORY } from '../const';
 import createAnswers from '../helpers/createAnswers';
 import getDefaultState from '../helpers/getDefaultState';
 import getQuestionStartPosition from '../helpers/getQuestionsRange';
@@ -55,17 +47,5 @@ export default class Model {
 
   isLastQuestion() {
     return +this.location.pageNum === QUESTIONS_PER_CATEGORY - 1;
-  }
-
-  getRating(result) {
-    if (result[this.location.categoryId] === RESULT_GRAND) {
-      return RATING_GRAND;
-    }
-
-    if (result[this.location.categoryId] < RESULT_CONGRATS) {
-      return RATING_GAMEOVER;
-    }
-
-    return RATING_CONGRATS;
   }
 }
