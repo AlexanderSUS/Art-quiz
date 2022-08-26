@@ -132,7 +132,7 @@ export default class Controller {
   }
 
   setRouteToModal() {
-    this.view.currentModalWindow
+    this.view.components.modal
       .querySelector('.modal-next-btn')
       .setAttribute(
         'href',
