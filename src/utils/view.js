@@ -1,4 +1,6 @@
-import { HOME_PAGE, SETTINGS_PAGE } from '../const';
+import { HOME_PAGE, IMAGE_URL_SMALL, QUESTIONS_PER_CATEGORY, SETTINGS_PAGE } from '../const';
+import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
+import categories from './categories';
 
 export default class View {
   constructor(pages, components) {
@@ -31,6 +33,61 @@ export default class View {
     this.currentPage.classList.add('active');
     // }, 300);
     // }, 300);
+  }
+
+  fillCategoryPage(quizType, results, dictionary) {
+    this.cleanPreviousCategories();
+
+    const imageContainer = this.pages.categories.querySelectorAll('.image-container');
+    const links = this.pages.categories.querySelectorAll('.start-btn');
+    const titles = this.pages.categories.querySelectorAll('.card-title');
+    const played = getIndexesOfPlayedCategories(results);
+
+    categories.forEach((element, index) => {
+      const img = new Image();
+      const [genre] = Object.keys(categories[index]);
+
+      img.src = `${IMAGE_URL_SMALL}${element.cover[quizType]}.jpg`;
+
+      titles[index].textContent = dictionary.categories[genre];
+
+      links[index].setAttribute('href', `#questions=${quizType}=${index}=0`);
+
+      if (played.includes(index)) {
+        this.fillPlayedCategory(quizType, index, results[index], dictionary);
+
+        img.onload = () => {
+          imageContainer[index].style.backgroundImage = `url(${img.src})`;
+        };
+      } else {
+        img.onload = () => {
+          imageContainer[
+            index
+          ].style.backgroundImage = `linear-gradient(black, black), url(${img.src})`;
+        };
+      }
+    });
+  }
+
+  fillPlayedCategory(quizType, categoryNum, categoryResults, dictionary) {
+    const imageContainer = this.pages.categories.querySelectorAll('.image-container');
+    const links = this.pages.categories.querySelectorAll('.start-btn');
+    const cards = this.pages.categories.querySelectorAll('.card');
+    const score = document.querySelectorAll('.score');
+    cards[categoryNum].classList.add('played');
+    links[categoryNum].style.backgroundImage = 'url(/assets/replay.svg)';
+
+    score[categoryNum].textContent = `${
+      categoryResults.filter((element) => element === true).length
+    }/${QUESTIONS_PER_CATEGORY}`;
+
+    const resultBtn = document.createElement('a');
+    resultBtn.setAttribute('href', `#results=${quizType}=${categoryNum}`);
+    resultBtn.classList.add('category-result-btn');
+    resultBtn.textContent = dictionary.titles.results;
+
+    imageContainer[categoryNum].appendChild(resultBtn);
+    imageContainer[categoryNum].style.backgroundImage = 'none';
   }
 
   cleanPreviousAnswers() {
