@@ -21,7 +21,7 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
-      this.loadSettings();
+      this.setLangButton();
       this.switchLanguage();
 
       window.addEventListener('hashchange', () => {
@@ -224,7 +224,7 @@ export default class Controller {
   }
 
   // TODO move to view class
-  loadSettings() {
+  setLangButton() {
     this.view.pages.settings.querySelector('#lang-check').checked = this.lang === LANG_RU;
   }
 }
