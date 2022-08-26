@@ -1,13 +1,5 @@
 import dictionary from './dictionary';
-import {
-  ARTIST_QUIZ,
-  CATEGORIES_PAGE,
-  LANG_EN,
-  LANG_RU,
-  QUESTIONNS_PAGE,
-  SETTINGS_PAGE,
-} from '../const';
-import addPicture from '../helpers/addPicture';
+import { CATEGORIES_PAGE, LANG_EN, LANG_RU, QUESTIONNS_PAGE, SETTINGS_PAGE } from '../const';
 
 export default class Controller {
   constructor(model, view) {
@@ -68,47 +60,23 @@ export default class Controller {
   }
 
   fillQuestionPage() {
-    const { quizType } = this.model.location;
+    const isLastQuestion = this.model.isLastQuestion.bind(this.model);
+    this.model.getAnswers();
 
-    this.view.cleanPreviousAnswers();
-    this.view.hideModalwindow();
-    this.model.getAnswers(quizType);
-    this.view.setRouteToBackBnts(quizType);
-    this.view.insertQuestion(dictionary[this.lang].question[quizType]);
-    this.view.appendAnswersContainer(quizType);
-    this.insertPictures();
-    this.view.insertAuthors(quizType, this.model.answers, this.lang);
-    this.view.setRouteToModal(
-      this.model.location.quizType,
-      this.model.location.categoryId,
-      this.model.location.pageNum,
-      this.model.isLastQuestion.bind(this.model),
-      this.model.state.results[this.model.location.quizType][this.model.location.categoryId],
+    this.view.fillQuestionPage(
+      this.model.location,
+      this.model.state.results,
+      this.model.answers,
+      isLastQuestion,
       dictionary[this.lang],
+      this.lang,
     );
-    this.view.markTrueAnswer(this.model.answers);
-    this.view.appendModalWindow();
   }
 
   insertQuestion() {
     const question = dictionary[this.lang].question[this.model.location.quizType];
 
     this.view.currentPage.querySelector('h4').textContent = question;
-  }
-
-  insertPictures() {
-    const { quizType } = this.model.location;
-    const { answers } = this.model;
-    const pictures = this.view.currentPage.querySelectorAll('.picture');
-
-    if (quizType === ARTIST_QUIZ) {
-      addPicture(...pictures, answers.trueAnswer.imageNum);
-      return;
-    }
-
-    pictures.forEach((picture, index) => {
-      addPicture(picture, answers.all[index].imageNum);
-    });
   }
 
   switchLanguage() {

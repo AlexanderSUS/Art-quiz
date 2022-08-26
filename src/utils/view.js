@@ -1,4 +1,5 @@
 import {
+  ARTIST_QUIZ,
   HOME_PAGE,
   IMAGE_URL_FULL,
   IMAGE_URL_SMALL,
@@ -7,6 +8,7 @@ import {
   RESULT_GAMEOVER,
   SETTINGS_PAGE,
 } from '../const';
+import addPicture from '../helpers/addPicture';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 import getRating from '../helpers/getRating';
 import categories from './categories';
@@ -159,6 +161,19 @@ export default class View {
     });
   }
 
+  insertPictures(quizType, answers) {
+    const pictures = this.currentPage.querySelectorAll('.picture');
+
+    if (quizType === ARTIST_QUIZ) {
+      addPicture(...pictures, answers.trueAnswer.imageNum);
+      return;
+    }
+
+    pictures.forEach((picture, index) => {
+      addPicture(picture, answers.all[index].imageNum);
+    });
+  }
+
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
     if (typeof variants !== 'undefined' && variants !== null) {
@@ -210,6 +225,29 @@ export default class View {
     setTimeout(() => {
       this.currentPage.querySelector('.variants').classList.add('expose');
     }, 300);
+  }
+
+  fillQuestionPage(quizData, results, answers, isLastQuestion, dictionary, lang) {
+    const { quizType, categoryId, pageNum } = quizData;
+    const categoryResults = results[quizType][categoryId];
+
+    this.cleanPreviousAnswers();
+    this.hideModalwindow();
+    this.setRouteToBackBnts(quizType);
+    this.insertQuestion(dictionary.question[quizType]);
+    this.appendAnswersContainer(quizType);
+    this.insertPictures(quizType, answers);
+    this.insertAuthors(quizType, answers, lang);
+    this.setRouteToModal(
+      quizType,
+      categoryId,
+      pageNum,
+      isLastQuestion,
+      categoryResults,
+      dictionary,
+    );
+    this.markTrueAnswer(answers);
+    this.appendModalWindow();
   }
 
   // *** SETTINGS ***
