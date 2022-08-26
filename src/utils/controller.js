@@ -20,17 +20,18 @@ export default class Controller {
   handleLocation() {
     this.model.setLocation();
     this.model.saveConfig();
+    this.view.switchPage(this.model.location.page);
 
-    const { page } = this.model.location;
-
-    this.view.switchPage(page);
-
-    switch (page) {
+    switch (this.model.location.page) {
       case SETTINGS_PAGE:
         this.view.setSettingsTitles(dictionary[this.lang]);
         break;
       case CATEGORIES_PAGE:
-        this.fillCategoryPage();
+        this.view.fillCategoryPage(
+          this.model.location.quizType,
+          this.model.state.results[this.model.location.quizType],
+          dictionary[this.lang],
+        );
         break;
       case QUESTIONNS_PAGE:
         this.fillQuestionPage();
@@ -47,13 +48,6 @@ export default class Controller {
     }
 
     this.view.fillNavButtonsText(dictionary[this.lang]);
-  }
-
-  fillCategoryPage() {
-    const { quizType } = this.model.location;
-    const results = this.model.state.results[quizType];
-
-    this.view.fillCategoryPage(quizType, results, dictionary[this.lang]);
   }
 
   fillQuestionPage() {
