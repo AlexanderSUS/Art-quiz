@@ -21,7 +21,6 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
-      this.setAnswerListener();
       this.setShowEndOfGameModal();
       this.view.setDefaultModalWindow();
       this.loadSettings();
@@ -50,6 +49,7 @@ export default class Controller {
         break;
       case QUESTIONNS_PAGE:
         this.fillQuestionPage();
+        this.setAnswerListener();
         break;
       default:
         document.location.hash = '#home';
@@ -107,11 +107,8 @@ export default class Controller {
   }
 
   setAnswerListener() {
-    this.view.components.answers.artist.querySelectorAll('.answer-btn').forEach((button) => {
-      this.higthLightAnswers(button);
-    });
-
-    this.view.components.answers.picture.querySelectorAll('.answer-btn').forEach((button) => {
+    const { quizType } = this.model.location;
+    this.view.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
       this.higthLightAnswers(button);
     });
   }
@@ -185,16 +182,20 @@ export default class Controller {
 
   // TODO move to view class
   higthLightAnswers(button) {
-    button.addEventListener('click', (e) => {
-      e.target.classList.add('picked');
+    button.addEventListener(
+      'click',
+      (e) => {
+        e.target.classList.add('picked');
 
-      this.model.pickResult(e.target.classList.contains('true'));
+        this.model.pickResult(e.target.classList.contains('true'));
 
-      this.view.addCheckmarkToModal(e.target.classList.contains('true'));
-      this.view.showTrueAnswer();
-      this.view.fillModal(this.model.answers.trueAnswer, this.lang);
-      this.view.showModalWindow(e.target.classList.contains('true'));
-    });
+        this.view.addCheckmarkToModal(e.target.classList.contains('true'));
+        this.view.showTrueAnswer();
+        this.view.fillModal(this.model.answers.trueAnswer, this.lang);
+        this.view.showModalWindow(e.target.classList.contains('true'));
+      },
+      { once: true },
+    );
   }
 
   // TODO move to view class
