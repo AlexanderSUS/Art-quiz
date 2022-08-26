@@ -82,19 +82,19 @@ export default class View {
 
       links[index].setAttribute('href', `#questions=${quizType}=${index}=0`);
 
+      let isPlayed = false;
+
       if (played.includes(index)) {
         this.fillPlayedCategory(quizType, index, results[index], dictionary);
 
-        img.onload = () => {
-          imageContainer[index].style.backgroundImage = `url(${img.src})`;
-        };
-      } else {
-        img.onload = () => {
-          imageContainer[
-            index
-          ].style.backgroundImage = `linear-gradient(black, black), url(${img.src})`;
-        };
+        isPlayed = true;
       }
+
+      img.onload = () => {
+        imageContainer[index].style.backgroundImage = `${
+          !isPlayed ? 'linear-gradient(black, black), ' : ''
+        }url(${img.src})`;
+      };
     });
   }
 
