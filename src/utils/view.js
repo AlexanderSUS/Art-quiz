@@ -21,6 +21,8 @@ export default class View {
     this.app.append(this.components.header, this.components.main, this.components.footer);
   }
 
+  // *** ROUTING ***
+
   switchPage(newPage) {
     this.currentPage.classList.remove('active');
 
@@ -42,6 +44,15 @@ export default class View {
     // }, 300);
     // }, 300);
   }
+
+  fillNavButtonsText(dictionary) {
+    this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
+      btn.textContent = dictionary.buttons[btn.classList[0]];
+    });
+  }
+  // *** END ROUTING ***
+
+  // *** CATEGORIES ***
 
   fillCategoryPage(quizType, results, dictionary) {
     this.cleanPreviousCategories();
@@ -98,38 +109,6 @@ export default class View {
     imageContainer[categoryNum].style.backgroundImage = 'none';
   }
 
-  cleanPreviousAnswers() {
-    const variants = this.pages.questions.querySelector('.variants');
-    if (typeof variants !== 'undefined' && variants !== null) {
-      this.repairAnswerTemplate();
-      this.clearAnswerClasses();
-      this.pages.questions.removeChild(variants);
-    }
-  }
-
-  fillNavButtonsText(dictionary) {
-    this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
-      btn.textContent = dictionary.buttons[btn.classList[0]];
-    });
-  }
-
-  setSettingsTitles(dictionary) {
-    const { language, timeGame, timeToAnswer } = dictionary.buttons;
-
-    this.pages.settings.querySelector('.lang-title').textContent = language;
-    this.pages.settings.querySelector('.time-check-title').textContent = timeGame;
-    this.pages.settings.querySelector('.time-value-title').textContent = timeToAnswer;
-  }
-
-  fillModal({ author, imageNum, picture, year }, lang) {
-    const modalImage = this.currentModalWindow.querySelector('.modal-image');
-    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
-
-    this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
-    this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
-    this.currentModalWindow.querySelector('.modal-year').textContent = year;
-  }
-
   cleanPreviousCategories() {
     const playedCategories = this.pages.categories.querySelectorAll('.played');
 
@@ -146,6 +125,31 @@ export default class View {
       });
     }
   }
+  // *** END CATEGORIES ***
+
+  // *** QUESTIONS ***
+
+  cleanPreviousAnswers() {
+    const variants = this.pages.questions.querySelector('.variants');
+    if (typeof variants !== 'undefined' && variants !== null) {
+      this.repairAnswerTemplate();
+      this.clearAnswerClasses();
+      this.pages.questions.removeChild(variants);
+    }
+  }
+
+  markTrueAnswer({ all, trueAnswer }) {
+    const answerBtns = this.currentPage.querySelectorAll('.answer-btn');
+    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
+
+    answerBtns[trueAnswerIndex].classList.add('true');
+  }
+
+  repairAnswerTemplate() {
+    this.pages.questions.querySelectorAll('.answer-btn.artist').forEach((element) => {
+      element.textContent = '__artist__';
+    });
+  }
 
   insertAuthors(quizType, { trueAnswer, all }, lang) {
     const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
@@ -161,17 +165,42 @@ export default class View {
     });
   }
 
-  markTrueAnswer({ all, trueAnswer }) {
-    const answerBtns = this.currentPage.querySelectorAll('.answer-btn');
-    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
-
-    answerBtns[trueAnswerIndex].classList.add('true');
+  appendAnswersContainer(quizType) {
+    this.currentPage.appendChild(this.components.answers[quizType]);
   }
 
-  repairAnswerTemplate() {
-    this.pages.questions.querySelectorAll('.answer-btn.artist').forEach((element) => {
-      element.textContent = '__artist__';
+  clearAnswerClasses() {
+    this.currentPage.querySelector('.variants').classList.remove('expose');
+    this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
+      element.classList.remove('picked', 'true');
     });
+  }
+
+  showTrueAnswer() {
+    setTimeout(() => {
+      this.currentPage.querySelector('.variants').classList.add('expose');
+    }, 300);
+  }
+
+  // *** SETTINGS ***
+  setSettingsTitles(dictionary) {
+    const { language, timeGame, timeToAnswer } = dictionary.buttons;
+
+    this.pages.settings.querySelector('.lang-title').textContent = language;
+    this.pages.settings.querySelector('.time-check-title').textContent = timeGame;
+    this.pages.settings.querySelector('.time-value-title').textContent = timeToAnswer;
+  }
+  // *** END SETTINGS ***
+
+  // *** MODAL ***
+
+  fillModal({ author, imageNum, picture, year }, lang) {
+    const modalImage = this.currentModalWindow.querySelector('.modal-image');
+    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
+
+    this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
+    this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
+    this.currentModalWindow.querySelector('.modal-year').textContent = year;
   }
 
   appendModalWindow() {
@@ -211,10 +240,6 @@ export default class View {
     );
   }
 
-  appendAnswersContainer(quizType) {
-    this.currentPage.appendChild(this.components.answers[quizType]);
-  }
-
   hideModalwindow() {
     this.currentModalWindow.classList.remove('show');
   }
@@ -224,16 +249,5 @@ export default class View {
     this.components.modal.querySelector('.modal-image').classList.add(answer);
   }
 
-  clearAnswerClasses() {
-    this.currentPage.querySelector('.variants').classList.remove('expose');
-    this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
-      element.classList.remove('picked', 'true');
-    });
-  }
-
-  showTrueAnswer() {
-    setTimeout(() => {
-      this.currentPage.querySelector('.variants').classList.add('expose');
-    }, 300);
-  }
+  // *** END MODAL ***
 }
