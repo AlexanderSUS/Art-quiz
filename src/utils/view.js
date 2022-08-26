@@ -200,7 +200,7 @@ export default class View {
   }
 
   appendAnswersContainer(quizType) {
-    this.view.currentPage.appendChild(this.view.components.answers[quizType]);
+    this.currentPage.appendChild(this.components.answers[quizType]);
   }
 
   hideModalwindow() {
