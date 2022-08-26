@@ -113,6 +113,14 @@ export default class View {
     });
   }
 
+  setSettingsTitles(dictionary) {
+    const { language, timeGame, timeToAnswer } = dictionary.buttons;
+
+    this.pages.settings.querySelector('.lang-title').textContent = language;
+    this.pages.settings.querySelector('.time-check-title').textContent = timeGame;
+    this.pages.settings.querySelector('.time-value-title').textContent = timeToAnswer;
+  }
+
   fillModal({ author, imageNum, picture, year }, lang) {
     const modalImage = this.currentModalWindow.querySelector('.modal-image');
     modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;

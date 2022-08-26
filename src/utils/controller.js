@@ -40,7 +40,7 @@ export default class Controller {
 
     switch (page) {
       case SETTINGS_PAGE:
-        this.setSettingsTitles();
+        this.view.setSettingsTitles(dictionary[this.lang]);
         break;
       case CATEGORIES_PAGE:
         this.fillCategoryPage();
@@ -202,22 +202,11 @@ export default class Controller {
     );
   }
 
-  // TODO move to view class
-  setSettingsTitles() {
-    document.querySelector('.lang-title').textContent = dictionary[this.lang].buttons.language;
-    // eslint-disable-next-line operator-linebreak
-    document.querySelector('.time-check-title').textContent =
-      dictionary[this.lang].buttons.timeGame;
-    // eslint-disable-next-line operator-linebreak
-    document.querySelector('.time-value-title').textContent =
-      dictionary[this.lang].buttons.timeToAnswer;
-  }
-
   switchLanguage() {
     this.view.pages.settings.querySelector('#lang-check').addEventListener('change', (e) => {
       this.lang = e.target.checked ? LANG_RU : LANG_EN;
 
-      this.setSettingsTitles();
+      this.view.setSettingsTitles(dictionary[this.lang]);
       this.view.fillNavButtonsText(dictionary[this.lang]);
       this.model.saveConfig();
     });
