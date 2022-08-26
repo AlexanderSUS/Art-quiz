@@ -34,34 +34,22 @@ export default class Controller {
         );
         break;
       case QUESTIONNS_PAGE:
-        this.fillQuestionPage();
-        this.view.setAnswerListener(
-          this.model.location.quizType,
-          this.model.answers.trueAnswer,
-          this.model.saveResult.bind(this.model),
+        this.model.getAnswers();
+        this.view.fillQuestionPage(
+          this.model.location,
+          this.model.state.results,
+          this.model.answers,
+          this.model.isLastQuestion.bind(this.model),
+          dictionary[this.lang],
           this.lang,
+          this.model.saveResult.bind(this.model),
         );
-        this.view.setDefaultModalWindow();
         break;
       default:
         document.location.hash = '#home';
     }
 
     this.view.fillNavButtonsText(dictionary[this.lang]);
-  }
-
-  fillQuestionPage() {
-    const isLastQuestion = this.model.isLastQuestion.bind(this.model);
-    this.model.getAnswers();
-
-    this.view.fillQuestionPage(
-      this.model.location,
-      this.model.state.results,
-      this.model.answers,
-      isLastQuestion,
-      dictionary[this.lang],
-      this.lang,
-    );
   }
 
   switchLanguage() {

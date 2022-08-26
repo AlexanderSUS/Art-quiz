@@ -228,7 +228,7 @@ export default class View {
     }, 300);
   }
 
-  fillQuestionPage(quizData, results, answers, isLastQuestion, dictionary, lang) {
+  fillQuestionPage(quizData, results, answers, isLastQuestion, dictionary, lang, saveResult) {
     const { quizType, categoryId, pageNum } = quizData;
     const categoryResults = results[quizType][categoryId];
 
@@ -249,6 +249,8 @@ export default class View {
     );
     this.markTrueAnswer(answers);
     this.appendModalWindow();
+    this.setAnswerListener(quizType, answers.trueAnswer, saveResult, lang);
+    this.setDefaultModalWindow();
   }
 
   // *** SETTINGS ***
