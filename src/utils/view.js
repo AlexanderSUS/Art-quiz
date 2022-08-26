@@ -183,10 +183,14 @@ export default class View {
     this.components.modalEndOfGame
       .querySelectorAll('.modal-back-btn, .modal-vary-btn')
       .forEach((element) => {
-        element.addEventListener('click', () => {
-          this.hideModalwindow();
-          this.changeCurrentModalWindow();
-        });
+        element.addEventListener(
+          'click',
+          () => {
+            this.hideModalwindow();
+            this.changeCurrentModalWindow();
+          },
+          { once: true },
+        );
       });
   }
 

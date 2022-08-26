@@ -21,8 +21,6 @@ export default class Controller {
   init() {
     window.onload = () => {
       document.location.hash = '#home';
-      this.setShowEndOfGameModal();
-      this.view.setDefaultModalWindow();
       this.loadSettings();
       this.switchLanguage();
 
@@ -50,6 +48,8 @@ export default class Controller {
       case QUESTIONNS_PAGE:
         this.fillQuestionPage();
         this.setAnswerListener();
+        this.setShowEndOfGameModal();
+        this.view.setDefaultModalWindow();
         break;
       default:
         document.location.hash = '#home';
@@ -145,17 +145,21 @@ export default class Controller {
   }
 
   setShowEndOfGameModal() {
-    this.view.components.modal.querySelector('.modal-next-btn').addEventListener('click', () => {
-      if (this.model.isLastQuestion()) {
-        this.view.removeModalWindow();
-        this.view.changeCurrentModalWindow();
-        this.fillEndOfGameModal();
-        this.view.appendModalWindow();
-        this.setRouteToBackBnts();
-        this.view.fillNavButtonsText(dictionary[this.lang]);
-        this.view.showModalWindow();
-      }
-    });
+    this.view.components.modal.querySelector('.modal-next-btn').addEventListener(
+      'click',
+      () => {
+        if (this.model.isLastQuestion()) {
+          this.view.removeModalWindow();
+          this.view.changeCurrentModalWindow();
+          this.fillEndOfGameModal();
+          this.view.appendModalWindow();
+          this.setRouteToBackBnts();
+          this.view.fillNavButtonsText(dictionary[this.lang]);
+          this.view.showModalWindow();
+        }
+      },
+      { once: true },
+    );
   }
 
   insertQuestion() {
