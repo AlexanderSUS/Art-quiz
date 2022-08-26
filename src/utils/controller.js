@@ -47,7 +47,12 @@ export default class Controller {
         break;
       case QUESTIONNS_PAGE:
         this.fillQuestionPage();
-        this.setAnswerListener();
+        this.view.setAnswerListener(
+          this.model.location.quizType,
+          this.model.answers.trueAnswer,
+          this.model.saveResult.bind(this.model),
+          this.lang,
+        );
         this.setShowEndOfGameModal();
         this.view.setDefaultModalWindow();
         break;
@@ -104,13 +109,6 @@ export default class Controller {
       varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
       varyBtn.textContent = dictionary[this.lang].buttons.playAgain;
     }
-  }
-
-  setAnswerListener() {
-    const { quizType } = this.model.location;
-    this.view.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
-      this.higthLightAnswers(button);
-    });
   }
 
   setEndOfGamePicture(result) {
@@ -182,24 +180,6 @@ export default class Controller {
     pictures.forEach((picture, index) => {
       addPicture(picture, answers.all[index].imageNum);
     });
-  }
-
-  // TODO move to view class
-  higthLightAnswers(button) {
-    button.addEventListener(
-      'click',
-      (e) => {
-        e.target.classList.add('picked');
-
-        this.model.pickResult(e.target.classList.contains('true'));
-
-        this.view.addCheckmarkToModal(e.target.classList.contains('true'));
-        this.view.showTrueAnswer();
-        this.view.fillModal(this.model.answers.trueAnswer, this.lang);
-        this.view.showModalWindow(e.target.classList.contains('true'));
-      },
-      { once: true },
-    );
   }
 
   switchLanguage() {

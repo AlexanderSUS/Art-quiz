@@ -129,6 +129,25 @@ export default class View {
 
   // *** QUESTIONS ***
 
+  setAnswerListener(quizType, trueAnswer, saveResult, lang) {
+    this.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
+      button.addEventListener(
+        'click',
+        (e) => {
+          e.target.classList.add('picked');
+
+          saveResult(e.target.classList.contains('true'));
+
+          this.addCheckmarkToModal(e.target.classList.contains('true'));
+          this.showTrueAnswer();
+          this.fillModal(trueAnswer, lang);
+          this.showModalWindow(e.target.classList.contains('true'));
+        },
+        { once: true },
+      );
+    });
+  }
+
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
     if (typeof variants !== 'undefined' && variants !== null) {

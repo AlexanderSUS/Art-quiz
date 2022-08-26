@@ -25,7 +25,7 @@ export default class Model {
     localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.state));
   }
 
-  pickResult(result) {
+  saveResult(result) {
     const { categoryId, pageNum, quizType } = this.location;
 
     this.state.results[quizType][categoryId][pageNum] = result;
