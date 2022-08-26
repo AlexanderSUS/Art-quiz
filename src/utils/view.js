@@ -75,6 +75,22 @@ export default class View {
     this.currentPage.removeChild(this.currentModalWindow);
   }
 
+  changeCurrentModalWindow() {
+    const { modalEndOfGame, modal } = this.components;
+    this.currentModalWindow = this.currentModalWindow === modal ? modalEndOfGame : modal;
+  }
+
+  setDefaultModalWindow() {
+    this.components.modalEndOfGame
+      .querySelectorAll('.modal-back-btn, .modal-vary-btn')
+      .forEach((element) => {
+        element.addEventListener('click', () => {
+          this.hideModalwindow();
+          this.changeCurrentModalWindow();
+        });
+      });
+  }
+
   showModalWindow(resultTrue) {
     setTimeout(
       () => {
@@ -89,16 +105,14 @@ export default class View {
   }
 
   addCheckmarkToModal(answer) {
-    this.components.modal.querySelector('.modal-image').classList.remove('true');
-    this.components.modal.querySelector('.modal-image').classList.remove('false');
+    this.components.modal.querySelector('.modal-image').classList.remove('true', 'false');
     this.components.modal.querySelector('.modal-image').classList.add(answer);
   }
 
   clearAnswerClasses() {
     this.currentPage.querySelector('.variants').classList.remove('expose');
     this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
-      element.classList.remove('picked');
-      element.classList.remove('true');
+      element.classList.remove('picked', 'true');
     });
   }
 

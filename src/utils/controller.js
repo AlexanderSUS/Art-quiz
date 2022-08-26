@@ -9,12 +9,7 @@ import {
   PICTURE_QUIZ,
   QUESTIONNS_PAGE,
   QUESTIONS_PER_CATEGORY,
-  RATING_CONGRATS,
-  RATING_GAMEOVER,
-  RATING_GRAND,
-  RESULT_CONGRATS,
   RESULT_GAMEOVER,
-  RESULT_GRAND,
   SETTINGS_PAGE,
 } from '../const';
 import categories from './categories';
@@ -33,7 +28,7 @@ export default class Controller {
       document.location.hash = '#home';
       this.setAnswerListener();
       this.setShowEndOfGameModal();
-      this.setDefaultModalWindow();
+      this.view.setDefaultModalWindow();
       this.loadSettings();
       this.switchLanguage();
 
@@ -153,9 +148,8 @@ export default class Controller {
     const { currentModalWindow } = this.view;
     const { author, imageNum, picture, year } = this.model.answers.trueAnswer;
 
-    currentModalWindow.querySelector(
-      '.modal-image',
-    ).style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
+    const modalImage = currentModalWindow.querySelector('.modal-image');
+    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
 
     currentModalWindow.querySelector('.modal-picture-name').textContent = picture[this.lang];
     currentModalWindow.querySelector('.modal-author').textContent = author[this.lang];
@@ -163,29 +157,28 @@ export default class Controller {
   }
 
   fillEndOfGameModal() {
+    const { quizType, categoryId } = this.model.location;
     const varyBtn = this.view.currentModalWindow.querySelector('.modal-vary-btn');
-    const results = this.model.getResults();
-    const rating = this.getRating(results);
+
+    const categoryResults = this.model.state.results[quizType][categoryId];
+
+    const result = categoryResults.filter((res) => res === true).length;
+
+    const rating = this.model.getRating(result);
 
     this.setEndOfGameTitle(rating);
     this.setEndOfGamePicture(rating);
 
-    this.view.currentModalWindow.querySelector('.end-of-game-score').textContent = `${
-      results[this.model.location.categoryId]
-    }/${QUESTIONS_PER_CATEGORY}`;
+    this.view.currentModalWindow.querySelector(
+      '.end-of-game-score',
+    ).textContent = `${result}/${QUESTIONS_PER_CATEGORY}`;
 
-    if (results[this.model.location.categoryId] > RESULT_GAMEOVER) {
-      varyBtn.setAttribute(
-        'href',
-        `#questions=${this.model.location.quizType}=${this.model.location.categoryId + 1}=0`,
-      );
+    if (result > RESULT_GAMEOVER) {
+      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId + 1}=0`);
 
       varyBtn.textContent = dictionary[this.model.state.lang].buttons.nextQuiz;
     } else {
-      varyBtn.setAttribute(
-        'href',
-        `#questions=${this.model.location.quizType}=${this.model.location.categoryId}=0`,
-      );
+      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
       varyBtn.textContent = dictionary[this.lang].buttons.playAgain;
     }
   }
@@ -202,29 +195,6 @@ export default class Controller {
     this.view.components.answers.picture.querySelectorAll('.answer-btn').forEach((button) => {
       this.higthLightAnswers(button);
     });
-  }
-
-  setDefaultModalWindow() {
-    this.view.components.modalEndOfGame
-      .querySelectorAll('.modal-back-btn, .modal-vary-btn')
-      .forEach((element) => {
-        element.addEventListener('click', () => {
-          this.view.hideModalwindow();
-          this.changeCurrentModalWindow();
-        });
-      });
-  }
-
-  getRating(result) {
-    if (result[this.model.location.categoryId] === RESULT_GRAND) {
-      return RATING_GRAND;
-    }
-
-    if (result[this.model.location.categoryId] < RESULT_CONGRATS) {
-      return RATING_GAMEOVER;
-    }
-
-    return RATING_CONGRATS;
   }
 
   setEndOfGamePicture(result) {
@@ -251,9 +221,9 @@ export default class Controller {
       .setAttribute(
         'href',
         `#questions=${this.model.location.quizType}=${this.model.location.categoryId}=${
-          this.model.location.pageNum < QUESTIONS_PER_CATEGORY
-            ? +this.model.location.pageNum + 1
-            : this.model.location.pageNum
+          this.model.isLastQuestion()
+            ? this.model.location.pageNum
+            : +this.model.location.pageNum + 1
         }`,
       );
   }
@@ -262,7 +232,7 @@ export default class Controller {
     this.view.components.modal.querySelector('.modal-next-btn').addEventListener('click', () => {
       if (this.model.isLastQuestion()) {
         this.view.removeModalWindow();
-        this.changeCurrentModalWindow();
+        this.view.changeCurrentModalWindow();
         this.fillEndOfGameModal();
         this.view.appendModalWindow();
         this.setRouteToBackBnts();
@@ -309,11 +279,7 @@ export default class Controller {
     });
   }
 
-  changeCurrentModalWindow() {
-    const { modalEndOfGame, modal } = this.view.components;
-    this.view.currentModalWindow = this.view.currentModalWindow === modal ? modalEndOfGame : modal;
-  }
-
+  // TODO move to view class
   higthLightAnswers(button) {
     button.addEventListener('click', (e) => {
       e.target.classList.add('picked');
@@ -327,6 +293,7 @@ export default class Controller {
     });
   }
 
+  // TO DO move to view class
   markTrueAnswer() {
     const answerBtns = this.view.currentPage.querySelectorAll('.answer-btn');
     const { all, trueAnswer } = this.model.answers;
@@ -335,6 +302,7 @@ export default class Controller {
     answerBtns[trueAnswerIndex].classList.add('true');
   }
 
+  // TODO move to view class
   setSettingsTitles() {
     document.querySelector('.lang-title').textContent = dictionary[this.lang].buttons.language;
     // eslint-disable-next-line operator-linebreak
@@ -355,6 +323,7 @@ export default class Controller {
     });
   }
 
+  // TODO move to view class
   loadSettings() {
     this.view.pages.settings.querySelector('#lang-check').checked = this.lang === LANG_RU;
   }
