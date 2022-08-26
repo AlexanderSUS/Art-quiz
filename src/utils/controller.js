@@ -2,10 +2,8 @@ import dictionary from './dictionary';
 import {
   ARTIST_QUIZ,
   CATEGORIES_PAGE,
-  IMAGE_URL_FULL,
   LANG_EN,
   LANG_RU,
-  PICTURE_QUIZ,
   QUESTIONNS_PAGE,
   QUESTIONS_PER_CATEGORY,
   RESULT_GAMEOVER,
@@ -57,7 +55,7 @@ export default class Controller {
         document.location.hash = '#home';
     }
 
-    this.fillNavButtonsText();
+    this.view.fillNavButtonsText(dictionary[this.lang]);
   }
 
   fillCategoryPage() {
@@ -67,38 +65,18 @@ export default class Controller {
     this.view.fillCategoryPage(quizType, results, dictionary[this.lang]);
   }
 
-  fillNavButtonsText() {
-    const buttons = this.view.currentPage.querySelectorAll('.nav-btn');
-
-    buttons.forEach((btn) => {
-      btn.textContent = dictionary[this.lang].buttons[btn.classList[0]];
-    });
-  }
-
   fillQuestionPage() {
     this.view.cleanPreviousAnswers();
     this.view.hideModalwindow();
-    this.model.getAnswers();
+    this.model.getAnswers(this.model.location.quizType);
     this.setRouteToBackBnts();
     this.insertQuestion();
-    this.appendAnswersContainer();
+    this.view.appendAnswersContainer(this.model.location.quizType);
     this.insertPictures();
-    this.insertAuthors();
+    this.view.insertAuthors(this.model.location.quizType, this.model.answers, this.lang);
     this.setRouteToModal();
-    this.markTrueAnswer();
+    this.view.markTrueAnswer(this.model.answers);
     this.view.appendModalWindow();
-  }
-
-  fillModal() {
-    const { currentModalWindow } = this.view;
-    const { author, imageNum, picture, year } = this.model.answers.trueAnswer;
-
-    const modalImage = currentModalWindow.querySelector('.modal-image');
-    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
-
-    currentModalWindow.querySelector('.modal-picture-name').textContent = picture[this.lang];
-    currentModalWindow.querySelector('.modal-author').textContent = author[this.lang];
-    currentModalWindow.querySelector('.modal-year').textContent = year;
   }
 
   fillEndOfGameModal() {
@@ -126,10 +104,6 @@ export default class Controller {
       varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
       varyBtn.textContent = dictionary[this.lang].buttons.playAgain;
     }
-  }
-
-  appendAnswersContainer() {
-    this.view.currentPage.appendChild(this.view.components.answers[this.model.location.quizType]);
   }
 
   setAnswerListener() {
@@ -181,7 +155,7 @@ export default class Controller {
         this.fillEndOfGameModal();
         this.view.appendModalWindow();
         this.setRouteToBackBnts();
-        this.fillNavButtonsText();
+        this.view.fillNavButtonsText(dictionary[this.lang]);
         this.view.showModalWindow();
       }
     });
@@ -209,21 +183,6 @@ export default class Controller {
     });
   }
 
-  insertAuthors() {
-    const [header, ...answers] = Array.from(this.view.currentPage.querySelectorAll('.artist'));
-    const trueAuthor = this.model.answers.trueAnswer.author[this.lang];
-
-    if (this.model.location.quizType === PICTURE_QUIZ) {
-      header.textContent = header.textContent.replace('__artist__', trueAuthor);
-
-      return;
-    }
-
-    answers.forEach((answer, index) => {
-      answer.textContent = this.model.answers.all[index].author[this.lang];
-    });
-  }
-
   // TODO move to view class
   higthLightAnswers(button) {
     button.addEventListener('click', (e) => {
@@ -233,18 +192,9 @@ export default class Controller {
 
       this.view.addCheckmarkToModal(e.target.classList.contains('true'));
       this.view.showTrueAnswer();
-      this.fillModal();
+      this.view.fillModal(this.model.answers.trueAnswer, this.lang);
       this.view.showModalWindow(e.target.classList.contains('true'));
     });
-  }
-
-  // TO DO move to view class
-  markTrueAnswer() {
-    const answerBtns = this.view.currentPage.querySelectorAll('.answer-btn');
-    const { all, trueAnswer } = this.model.answers;
-    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
-
-    answerBtns[trueAnswerIndex].classList.add('true');
   }
 
   // TODO move to view class
@@ -263,7 +213,7 @@ export default class Controller {
       this.lang = e.target.checked ? LANG_RU : LANG_EN;
 
       this.setSettingsTitles();
-      this.fillNavButtonsText();
+      this.view.fillNavButtonsText(dictionary[this.lang]);
       this.model.saveConfig();
     });
   }

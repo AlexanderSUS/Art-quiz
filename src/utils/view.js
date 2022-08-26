@@ -1,4 +1,12 @@
-import { HOME_PAGE, IMAGE_URL_SMALL, QUESTIONS_PER_CATEGORY, SETTINGS_PAGE } from '../const';
+import {
+  HOME_PAGE,
+  IMAGE_URL_FULL,
+  IMAGE_URL_SMALL,
+  PICTURE_QUIZ,
+  QUESTIONS_PER_CATEGORY,
+  RESULT_GAMEOVER,
+  SETTINGS_PAGE,
+} from '../const';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 import categories from './categories';
 
@@ -99,6 +107,21 @@ export default class View {
     }
   }
 
+  fillNavButtonsText(dictionary) {
+    this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
+      btn.textContent = dictionary.buttons[btn.classList[0]];
+    });
+  }
+
+  fillModal({ author, imageNum, picture, year }, lang) {
+    const modalImage = this.currentModalWindow.querySelector('.modal-image');
+    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
+
+    this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
+    this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
+    this.currentModalWindow.querySelector('.modal-year').textContent = year;
+  }
+
   cleanPreviousCategories() {
     const playedCategories = this.pages.categories.querySelectorAll('.played');
 
@@ -114,6 +137,27 @@ export default class View {
         element.querySelector('.start-btn').style.backgroundImage = null;
       });
     }
+  }
+
+  insertAuthors(quizType, { trueAnswer, all }, lang) {
+    const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
+
+    if (quizType === PICTURE_QUIZ) {
+      header.textContent = header.textContent.replace('__artist__', trueAnswer.author[lang]);
+
+      return;
+    }
+
+    answersElms.forEach((answer, index) => {
+      answer.textContent = all[index].author[lang];
+    });
+  }
+
+  markTrueAnswer({ all, trueAnswer }) {
+    const answerBtns = this.currentPage.querySelectorAll('.answer-btn');
+    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
+
+    answerBtns[trueAnswerIndex].classList.add('true');
   }
 
   repairAnswerTemplate() {
@@ -153,6 +197,10 @@ export default class View {
       },
       resultTrue ? 300 : 1000,
     );
+  }
+
+  appendAnswersContainer(quizType) {
+    this.view.currentPage.appendChild(this.view.components.answers[quizType]);
   }
 
   hideModalwindow() {
