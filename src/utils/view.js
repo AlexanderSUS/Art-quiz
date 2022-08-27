@@ -1,6 +1,5 @@
 import {
   IMAGE_URL_FULL,
-  IMAGE_URL_SMALL,
   LANG_RU,
   PICTURE_QUIZ,
   QUESTIONS_PER_CATEGORY,
@@ -8,6 +7,7 @@ import {
 } from '../const';
 import addPicture from '../helpers/addPicture';
 import fillPlayedCategory from '../helpers/fillPlayedCategory';
+import getCategoryImage from '../helpers/getCategoryImage';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 import getRating from '../helpers/getRating';
 import categories from './categories';
@@ -110,12 +110,10 @@ export default class View {
     const score = document.querySelectorAll('.score');
     const played = getIndexesOfPlayedCategories(results);
 
-    categories.forEach((element, categoryId) => {
-      const img = new Image();
+    categories.forEach((category, categoryId) => {
+      const img = getCategoryImage(category.cover[quizType]);
       const [genre] = Object.keys(categories[categoryId]);
       let isPlayed = false;
-
-      img.src = `${IMAGE_URL_SMALL}${element.cover[quizType]}.jpg`;
 
       titles[categoryId].textContent = dictionary.categories[genre];
 
@@ -137,9 +135,8 @@ export default class View {
       }
 
       img.onload = () => {
-        imageContainers[categoryId].style.backgroundImage = `${
-          !isPlayed ? 'linear-gradient(black, black), ' : ''
-        }url(${img.src})`;
+        const bgImageStyle = `${isPlayed ? '' : 'linear-gradient(black, black),'}url(${img.src})`;
+        imageContainers[categoryId].style.backgroundImage = bgImageStyle;
       };
     });
   }
