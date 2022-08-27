@@ -1,4 +1,4 @@
-import { ART_QUIZ_CONFIG, QUESTIONS_PER_CATEGORY } from '../const';
+import { ART_QUIZ_CONFIG } from '../const';
 import createAnswers from '../helpers/createAnswers';
 import getDefaultState from '../helpers/getDefaultState';
 import getQuestionStartPosition from '../helpers/getQuestionsRange';
@@ -17,8 +17,8 @@ export default class Model {
     localStorage.setItem(ART_QUIZ_CONFIG, JSON.stringify(this.state));
   }
 
-  saveResult(result) {
-    const { categoryId, pageNum, quizType } = this.location;
+  saveResult(result, location) {
+    const { categoryId, pageNum, quizType } = location;
 
     this.state.results[quizType][categoryId][pageNum] = result;
   }
@@ -28,13 +28,10 @@ export default class Model {
     this.location = { page, quizType, categoryId, pageNum };
   }
 
-  getAnswers() {
-    const { quizType, categoryId, pageNum } = this.location;
-
-    const questionStartPosition =
-      getQuestionStartPosition(quizType, categoryId) + parseInt(pageNum);
-
-    const [trueAnswerNum, ...falseAnswers] = createAnswers(questionStartPosition);
+  getAnswers(quizType, categoryId, pageNum) {
+    const [trueAnswerNum, ...falseAnswers] = createAnswers(
+      getQuestionStartPosition(quizType, categoryId) + parseInt(pageNum),
+    );
 
     const falseImages = falseAnswers.map((falseAnswerNum) => images[falseAnswerNum]);
 
@@ -43,9 +40,5 @@ export default class Model {
       falseAnswers: falseImages,
       all: shuffleAnswers([images[trueAnswerNum], ...falseImages]),
     };
-  }
-
-  isLastQuestion() {
-    return +this.location.pageNum === QUESTIONS_PER_CATEGORY - 1;
   }
 }
