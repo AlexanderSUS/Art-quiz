@@ -1,5 +1,4 @@
 import {
-  ARTIST_QUIZ,
   IMAGE_URL_FULL,
   IMAGE_URL_SMALL,
   LANG_RU,
@@ -312,26 +311,32 @@ export default class View {
     this.components.modal.querySelector('.modal-image').classList.add(answer);
   }
 
-  fillEndOfGameModal(quizType, categoryId, categoryResults, dictionary) {
-    const varyBtn = this.currentModalWindow.querySelector('.modal-vary-btn');
-    const result = categoryResults.filter((res) => res === true).length;
-    const rating = getRating(result[categoryId]);
+  fillEndOfGameModal(quizType, categoryId, categoryResults, { titles, buttons }) {
+    const score = categoryResults.filter((res) => res === true).length;
+    const rating = getRating(score);
 
-    this.setEndOfGameTitle(rating, dictionary);
+    this.setEndOfGameTitle(titles[rating]);
     this.setEndOfGamePicture(rating);
+    this.setScoreToModalWindow(score);
+    this.setEndOfGameModalVariableButton(score, buttons, quizType, categoryId);
+  }
 
-    this.currentModalWindow.querySelector(
-      '.end-of-game-score',
-    ).textContent = `${result}/${QUESTIONS_PER_CATEGORY}`;
+  setEndOfGameModalVariableButton(score, dictionaryButtons, quizType, categoryId) {
+    const varyBtn = this.currentModalWindow.querySelector('.modal-vary-btn');
 
-    if (result > RESULT_GAMEOVER) {
+    if (score > RESULT_GAMEOVER) {
       varyBtn.setAttribute('href', `#questions=${quizType}=${+categoryId + 1}=0`);
-
-      varyBtn.textContent = dictionary.buttons.nextQuiz;
+      varyBtn.textContent = dictionaryButtons.nextQuiz;
     } else {
       varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
-      varyBtn.textContent = dictionary.buttons.playAgain;
+      varyBtn.textContent = dictionaryButtons.playAgain;
     }
+  }
+
+  setScoreToModalWindow(score) {
+    this.currentModalWindow.querySelector(
+      '.end-of-game-score',
+    ).textContent = `${score}/${QUESTIONS_PER_CATEGORY}`;
   }
 
   setEndOfGamePicture(result) {
@@ -340,8 +345,8 @@ export default class View {
     ).style.backgroundImage = `url(./assets/${result}.svg)`;
   }
 
-  setEndOfGameTitle(result, { titles }) {
-    this.currentModalWindow.querySelector('.end-of-game-title').textContent = titles[result];
+  setEndOfGameTitle(title) {
+    this.currentModalWindow.querySelector('.end-of-game-title').textContent = title;
   }
 
   showEndOfGameModal(quizType, categoryId, categoryResults, dictionary) {
