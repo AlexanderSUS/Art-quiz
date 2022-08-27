@@ -8,6 +8,7 @@ import {
   RESULT_GAMEOVER,
 } from '../const';
 import addPicture from '../helpers/addPicture';
+import fillPlayedCategory from '../helpers/fillPlayedCategory';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 import getRating from '../helpers/getRating';
 import categories from './categories';
@@ -53,6 +54,12 @@ export default class View {
     this.fillNavButtonsText(dictionary);
     this.setSettingsTitles(dictionary);
   }
+
+  fillCategoryPage(quiztype, results, dictionary) {
+    this.disableHomePageStyles();
+    this.cleanPreviousCategories();
+    this.fillCategoryCards(quiztype, results, dictionary);
+  }
   // *** END ROUTING ***
 
   // *** STYLING METHODS ***
@@ -78,79 +85,60 @@ export default class View {
   // *** END STYLING METHODS ***
 
   // *** CATEGORIES ***
-
-  fillCategoryPage(quizType, results, dictionary) {
-    this.disableHomePageStyles();
-    this.cleanPreviousCategories();
-
-    const imageContainer = this.pages.categories.querySelectorAll('.image-container');
+  fillCategoryCards(quizType, results, dictionary) {
+    const imageContainers = this.pages.categories.querySelectorAll('.image-container');
     const links = this.pages.categories.querySelectorAll('.start-btn');
     const titles = this.pages.categories.querySelectorAll('.card-title');
+    const cards = this.pages.categories.querySelectorAll('.card');
+    const score = document.querySelectorAll('.score');
     const played = getIndexesOfPlayedCategories(results);
 
-    categories.forEach((element, index) => {
+    categories.forEach((element, categoryId) => {
       const img = new Image();
-      const [genre] = Object.keys(categories[index]);
+      const [genre] = Object.keys(categories[categoryId]);
+      let isPlayed = false;
 
       img.src = `${IMAGE_URL_SMALL}${element.cover[quizType]}.jpg`;
 
-      titles[index].textContent = dictionary.categories[genre];
+      titles[categoryId].textContent = dictionary.categories[genre];
 
-      links[index].setAttribute('href', `#questions=${quizType}=${index}=0`);
+      links[categoryId].setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
 
-      let isPlayed = false;
-
-      if (played.includes(index)) {
-        this.fillPlayedCategory(quizType, index, results[index], dictionary);
-
+      if (played.includes(categoryId)) {
+        cards[categoryId].classList.add('played');
+        links[categoryId].style.backgroundImage = 'url(/assets/replay.svg)';
         isPlayed = true;
+
+        fillPlayedCategory({
+          imageContainer: imageContainers[categoryId],
+          score: score[categoryId],
+          quizType,
+          categoryNum: categoryId,
+          categoryResults: results[categoryId],
+          dictionary,
+        });
       }
 
       img.onload = () => {
-        imageContainer[index].style.backgroundImage = `${
+        imageContainers[categoryId].style.backgroundImage = `${
           !isPlayed ? 'linear-gradient(black, black), ' : ''
         }url(${img.src})`;
       };
     });
   }
 
-  fillPlayedCategory(quizType, categoryNum, categoryResults, dictionary) {
-    const imageContainer = this.pages.categories.querySelectorAll('.image-container');
-    const links = this.pages.categories.querySelectorAll('.start-btn');
-    const cards = this.pages.categories.querySelectorAll('.card');
-    const score = document.querySelectorAll('.score');
-    cards[categoryNum].classList.add('played');
-    links[categoryNum].style.backgroundImage = 'url(/assets/replay.svg)';
-
-    score[categoryNum].textContent = `${
-      categoryResults.filter((element) => element === true).length
-    }/${QUESTIONS_PER_CATEGORY}`;
-
-    const resultBtn = document.createElement('a');
-    resultBtn.setAttribute('href', `#results=${quizType}=${categoryNum}`);
-    resultBtn.classList.add('category-result-btn');
-    resultBtn.textContent = dictionary.titles.results;
-
-    imageContainer[categoryNum].appendChild(resultBtn);
-    imageContainer[categoryNum].style.backgroundImage = 'none';
-  }
-
   cleanPreviousCategories() {
-    const playedCategories = this.pages.categories.querySelectorAll('.played');
+    this.pages.categories.querySelectorAll('.played').forEach((element) => {
+      element.classList.remove('played');
 
-    if (playedCategories.length) {
-      playedCategories.forEach((element) => {
-        element.classList.remove('played');
+      const cardTitleContainer = element.querySelector('.card-title-container');
+      cardTitleContainer.lastChild.textContent = '';
 
-        const cardTitleContainer = element.querySelector('.card-title-container');
-        cardTitleContainer.removeChild(cardTitleContainer.lastChild);
+      const imageContainer = element.querySelector('.image-container');
+      imageContainer.removeChild(imageContainer.lastChild);
 
-        const imageContainer = element.querySelector('.image-container');
-        imageContainer.removeChild(imageContainer.lastChild);
-
-        element.querySelector('.start-btn').style.backgroundImage = null;
-      });
-    }
+      element.querySelector('.start-btn').style.backgroundImage = null;
+    });
   }
   // *** END CATEGORIES ***
 
