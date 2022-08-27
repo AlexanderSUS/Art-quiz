@@ -60,6 +60,24 @@ export default class View {
     this.cleanPreviousCategories();
     this.fillCategoryCards(quiztype, results, dictionary);
   }
+
+  fillQuestionPage(quizData, results, answers, dictionary, lang, saveResult) {
+    const { quizType, categoryId, pageNum } = quizData;
+    const categoryResults = results[quizType][categoryId];
+
+    this.cleanPreviousAnswers();
+    this.hideModalwindow();
+    this.setRouteToBackBnts(quizType);
+    this.insertQuestion(dictionary.question[quizType]);
+    this.appendAnswersContainer(quizType);
+    this.insertAuthorsAndPictures(quizType, answers, lang);
+    this.setRouteToModal(quizType, categoryId, pageNum, categoryResults, dictionary);
+    this.markTrueAnswer(answers);
+    this.appendModalWindow();
+    this.setAnswerListener(quizData, answers.trueAnswer, saveResult, lang);
+    this.setDefaultModalWindow();
+  }
+
   // *** END ROUTING ***
 
   // *** STYLING METHODS ***
@@ -166,22 +184,28 @@ export default class View {
     });
   }
 
-  insertPictures(quizType, answers) {
-    const pictures = this.currentPage.querySelectorAll('.picture');
+  insertAuthorsAndPictures(quizType, { trueAnswer, all }, lang) {
+    const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
+    const picturesElms = this.currentPage.querySelectorAll('.picture');
 
-    if (quizType === ARTIST_QUIZ) {
-      addPicture(...pictures, answers.trueAnswer.imageNum);
-      return;
+    if (quizType === PICTURE_QUIZ) {
+      header.textContent = header.textContent.replace('__artist__', trueAnswer.author[lang]);
+
+      picturesElms.forEach((picture, index) => {
+        addPicture(picture, all[index].imageNum);
+      });
+    } else {
+      addPicture(...picturesElms, trueAnswer.imageNum);
+
+      answersElms.forEach((answer, index) => {
+        answer.textContent = all[index].author[lang];
+      });
     }
-
-    pictures.forEach((picture, index) => {
-      addPicture(picture, answers.all[index].imageNum);
-    });
   }
 
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
-    if (typeof variants !== 'undefined' && variants !== null) {
+    if (variants) {
       this.repairAnswerTemplate();
       this.clearAnswerClasses();
       this.pages.questions.removeChild(variants);
@@ -201,20 +225,6 @@ export default class View {
     });
   }
 
-  insertAuthors(quizType, { trueAnswer, all }, lang) {
-    const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
-
-    if (quizType === PICTURE_QUIZ) {
-      header.textContent = header.textContent.replace('__artist__', trueAnswer.author[lang]);
-
-      return;
-    }
-
-    answersElms.forEach((answer, index) => {
-      answer.textContent = all[index].author[lang];
-    });
-  }
-
   appendAnswersContainer(quizType) {
     this.currentPage.appendChild(this.components.answers[quizType]);
   }
@@ -230,24 +240,6 @@ export default class View {
     setTimeout(() => {
       this.currentPage.querySelector('.variants').classList.add('expose');
     }, 300);
-  }
-
-  fillQuestionPage(quizData, results, answers, dictionary, lang, saveResult) {
-    const { quizType, categoryId, pageNum } = quizData;
-    const categoryResults = results[quizType][categoryId];
-
-    this.cleanPreviousAnswers();
-    this.hideModalwindow();
-    this.setRouteToBackBnts(quizType);
-    this.insertQuestion(dictionary.question[quizType]);
-    this.appendAnswersContainer(quizType);
-    this.insertPictures(quizType, answers);
-    this.insertAuthors(quizType, answers, lang);
-    this.setRouteToModal(quizType, categoryId, pageNum, categoryResults, dictionary);
-    this.markTrueAnswer(answers);
-    this.appendModalWindow();
-    this.setAnswerListener(quizData, answers.trueAnswer, saveResult, lang);
-    this.setDefaultModalWindow();
   }
 
   // *** SETTINGS ***
