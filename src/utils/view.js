@@ -43,9 +43,9 @@ export default class View {
       this.components.main.classList.remove('at-home');
     }
 
-    // setTimeout(() => {
-    this.currentPage.classList.add('active');
-    // }, 300);
+    setTimeout(() => {
+      this.currentPage.classList.add('active');
+    }, 300);
     // }, 300);
   }
 
@@ -66,6 +66,7 @@ export default class View {
 
   fillCategoryPage(quizType, results, dictionary) {
     this.cleanPreviousCategories();
+    console.log(this.pages.categories);
 
     const imageContainer = this.pages.categories.querySelectorAll('.image-container');
     const links = this.pages.categories.querySelectorAll('.start-btn');
@@ -122,15 +123,18 @@ export default class View {
   cleanPreviousCategories() {
     const playedCategories = this.pages.categories.querySelectorAll('.played');
 
-    if (typeof playedCategories !== 'undefined' && playedCategories != null) {
+    console.log('length of played categories', playedCategories.length);
+
+    if (playedCategories.length) {
       playedCategories.forEach((element) => {
         element.classList.remove('played');
-        element
-          .querySelector('.card-title-container')
-          .removeChild(element.querySelector('.card-title-container').lastChild);
-        element
-          .querySelector('.image-container')
-          .removeChild(element.querySelector('.image-container').lastChild);
+
+        const cardTitleContainer = element.querySelector('.card-title-container');
+        cardTitleContainer.removeChild(cardTitleContainer.lastChild);
+
+        const imageContainer = element.querySelector('.image-container');
+        imageContainer.removeChild(imageContainer.lastChild);
+
         element.querySelector('.start-btn').style.backgroundImage = null;
       });
     }
@@ -272,7 +276,6 @@ export default class View {
   fillModal({ author, imageNum, picture, year }, lang) {
     const modalImage = this.currentModalWindow.querySelector('.modal-image');
     modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
-
     this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
     this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
     this.currentModalWindow.querySelector('.modal-year').textContent = year;
@@ -337,7 +340,7 @@ export default class View {
     ).textContent = `${result}/${QUESTIONS_PER_CATEGORY}`;
 
     if (result > RESULT_GAMEOVER) {
-      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId + 1}=0`);
+      varyBtn.setAttribute('href', `#questions=${quizType}=${+categoryId + 1}=0`);
 
       varyBtn.textContent = dictionary.buttons.nextQuiz;
     } else {
