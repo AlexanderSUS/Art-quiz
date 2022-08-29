@@ -107,7 +107,7 @@ export default class View {
 
     categories.forEach((category, categoryId) => {
       const img = getCategoryImage(category.cover[quizType]);
-      const [genre] = Object.keys(categories[categoryId]);
+      const [genre] = Object.keys(category);
       let isPlayed = false;
 
       titles[categoryId].textContent = dictionary.categories[genre];
@@ -151,24 +151,26 @@ export default class View {
     this.currentPage.querySelector('h4').textContent = question;
   }
 
-  setAnswerListener(quizData, trueAnswer, saveResult, lang) {
-    this.bindedAnswerHandler = this.handleAnswer(quizData, saveResult, trueAnswer, lang).bind(this);
+  setAnswerListener({ quizType }, trueAnswer, saveResult, lang) {
+    this.bindedAnswerHandler = this.handleAnswer(saveResult, trueAnswer, lang).bind(this);
 
-    this.components.answers[quizData.quizType].querySelectorAll('.answer-btn').forEach((button) => {
+    this.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
       button.addEventListener('click', this.bindedAnswerHandler, { once: true });
     });
   }
 
-  handleAnswer(quizData, saveResult, trueAnswer, lang) {
+  handleAnswer(saveResult, trueAnswer, lang) {
     return ({ target }) => {
+      const isResultTrue = target.classList.contains('true');
+
       target.classList.add('picked');
 
-      saveResult(target.classList.contains('true'), quizData);
+      saveResult(isResultTrue);
 
-      this.addCheckmarkToModal(target.classList.contains('true'));
+      this.addCheckmarkToModal(isResultTrue);
       this.showTrueAnswer();
       this.fillModal(trueAnswer, lang);
-      this.showModalWindow(target.classList.contains('true'));
+      this.showModalWindow(isResultTrue);
     };
   }
 

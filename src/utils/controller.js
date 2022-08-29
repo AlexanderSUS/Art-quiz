@@ -54,7 +54,7 @@ export default class Controller {
           this.model.answers,
           dictionary[this.lang],
           this.lang,
-          this.model.saveResult.bind(this.model),
+          this.model.saveResult(quizType, categoryId, pageNum).bind(this.model),
         );
         break;
       default:
