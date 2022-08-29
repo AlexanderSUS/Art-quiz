@@ -21,6 +21,7 @@ export default class View {
     this.currentModalWindow = this.components.modal;
     this.components.main.append(this.currentPage);
     this.app.append(this.components.header, this.components.main, this.components.footer);
+    this.bindedAnswerHandler = null;
   }
 
   // *** ROUTING ***
@@ -162,22 +163,24 @@ export default class View {
   }
 
   setAnswerListener(quizData, trueAnswer, saveResult, lang) {
+    this.bindedAnswerHandler = this.handleAnswer(quizData, saveResult, trueAnswer, lang).bind(this);
+
     this.components.answers[quizData.quizType].querySelectorAll('.answer-btn').forEach((button) => {
-      button.addEventListener(
-        'click',
-        (e) => {
-          e.target.classList.add('picked');
-
-          saveResult(e.target.classList.contains('true'), quizData);
-
-          this.addCheckmarkToModal(e.target.classList.contains('true'));
-          this.showTrueAnswer();
-          this.fillModal(trueAnswer, lang);
-          this.showModalWindow(e.target.classList.contains('true'));
-        },
-        { once: true },
-      );
+      button.addEventListener('click', this.bindedAnswerHandler, { once: true });
     });
+  }
+
+  handleAnswer(quizData, saveResult, trueAnswer, lang) {
+    return ({ target }) => {
+      target.classList.add('picked');
+
+      saveResult(target.classList.contains('true'), quizData);
+
+      this.addCheckmarkToModal(target.classList.contains('true'));
+      this.showTrueAnswer();
+      this.fillModal(trueAnswer, lang);
+      this.showModalWindow(target.classList.contains('true'));
+    };
   }
 
   insertAuthorsAndPictures(quizType, { trueAnswer, all }, lang) {
@@ -229,7 +232,12 @@ export default class View {
     this.currentPage.querySelector('.variants').classList.remove('expose');
     this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       element.classList.remove('picked', 'true');
+      this.removeAnswerListeners(element);
     });
+  }
+
+  removeAnswerListeners(button) {
+    button.removeEventListener('click', this.bindedAnswerHandler);
   }
 
   showTrueAnswer() {
