@@ -69,7 +69,6 @@ export default class View {
     this.markTrueAnswer(answers);
     this.appendModalWindow();
     this.setAnswerListener(quizData, answers.trueAnswer, saveResult, lang);
-    this.setDefaultModalWindow();
   }
 
   // *** END ROUTING ***
@@ -269,21 +268,6 @@ export default class View {
     this.currentModalWindow = this.currentModalWindow === modal ? modalFinal : modal;
   }
 
-  setDefaultModalWindow() {
-    this.components.modalFinal
-      .querySelectorAll('.modal-back-btn, .modal-vary-btn')
-      .forEach((element) => {
-        element.addEventListener(
-          'click',
-          () => {
-            this.hideModalwindow();
-            this.changeCurrentModalWindow();
-          },
-          { once: true },
-        );
-      });
-  }
-
   showModalWindow(resultTrue) {
     setTimeout(
       () => {
@@ -352,15 +336,16 @@ export default class View {
 
   setRouteToModal(quizType, categoryId, pageNum, categoryResults, dictionary) {
     const modalNextBtn = this.components.modal.querySelector('.modal-next-btn');
+    const bindedShowFilnalModalMethod = this.showFinalModal.bind(
+      this,
+      quizType,
+      categoryId,
+      categoryResults,
+      dictionary,
+    );
 
     if (+pageNum === QUESTIONS_PER_CATEGORY - 1) {
-      modalNextBtn.addEventListener(
-        'click',
-        () => {
-          this.showFinalModal.call(this, quizType, categoryId, categoryResults, dictionary);
-        },
-        { once: true },
-      );
+      modalNextBtn.addEventListener('click', bindedShowFilnalModalMethod, { once: true });
     } else {
       modalNextBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=${+pageNum + 1}`);
     }
