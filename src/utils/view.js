@@ -263,12 +263,12 @@ export default class View {
   }
 
   changeCurrentModalWindow() {
-    const { modalEndOfGame, modal } = this.components;
-    this.currentModalWindow = this.currentModalWindow === modal ? modalEndOfGame : modal;
+    const { modalFinal, modal } = this.components;
+    this.currentModalWindow = this.currentModalWindow === modal ? modalFinal : modal;
   }
 
   setDefaultModalWindow() {
-    this.components.modalEndOfGame
+    this.components.modalFinal
       .querySelectorAll('.modal-back-btn, .modal-vary-btn')
       .forEach((element) => {
         element.addEventListener(
@@ -300,17 +300,17 @@ export default class View {
     this.components.modal.querySelector('.modal-image').classList.add(answer);
   }
 
-  fillEndOfGameModal(quizType, categoryId, categoryResults, { titles, buttons }) {
+  fillFinalModal(quizType, categoryId, categoryResults, { titles, buttons }) {
     const score = categoryResults.filter((res) => res === true).length;
     const rating = getRating(score);
 
-    this.setEndOfGameTitle(titles[rating]);
-    this.setEndOfGamePicture(rating);
+    this.setFinalTitle(titles[rating]);
+    this.setFinalPicture(rating);
     this.setScoreToModalWindow(score);
-    this.setEndOfGameModalVariableButton(score, buttons, quizType, categoryId);
+    this.setFinalModalVariableButton(score, buttons, quizType, categoryId);
   }
 
-  setEndOfGameModalVariableButton(score, dictionaryButtons, quizType, categoryId) {
+  setFinalModalVariableButton(score, dictionaryButtons, quizType, categoryId) {
     const varyBtn = this.currentModalWindow.querySelector('.modal-vary-btn');
 
     if (score > RESULT_GAMEOVER) {
@@ -328,20 +328,20 @@ export default class View {
     ).textContent = `${score}/${QUESTIONS_PER_CATEGORY}`;
   }
 
-  setEndOfGamePicture(result) {
+  setFinalPicture(result) {
     this.currentModalWindow.querySelector(
       '.end-of-game-image',
     ).style.backgroundImage = `url(./assets/${result}.svg)`;
   }
 
-  setEndOfGameTitle(title) {
+  setFinalTitle(title) {
     this.currentModalWindow.querySelector('.end-of-game-title').textContent = title;
   }
 
-  showEndOfGameModal(quizType, categoryId, categoryResults, dictionary) {
+  showFinalModal(quizType, categoryId, categoryResults, dictionary) {
     this.removeModalWindow();
     this.changeCurrentModalWindow();
-    this.fillEndOfGameModal(quizType, categoryId, categoryResults, dictionary);
+    this.fillFinalModal(quizType, categoryId, categoryResults, dictionary);
     this.appendModalWindow();
     this.setRouteToBackBnts(quizType);
     this.fillNavButtonsText(dictionary);
@@ -355,7 +355,7 @@ export default class View {
       modalNextBtn.addEventListener(
         'click',
         () => {
-          this.showEndOfGameModal.call(this, quizType, categoryId, categoryResults, dictionary);
+          this.showFinalModal.call(this, quizType, categoryId, categoryResults, dictionary);
         },
         { once: true },
       );

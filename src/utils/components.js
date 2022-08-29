@@ -2,7 +2,7 @@ import header from '../views/components/header';
 import footer from '../views/components/footer';
 import answers from '../views/components/answers';
 import modal from '../views/components/modal';
-import modalEndOfGame from '../views/components/modalEndOfGame';
+import modalFinal from '../views/components/finalModalWindow';
 import main from '../views/components/main/main';
 
 const components = {
@@ -10,7 +10,7 @@ const components = {
   footer,
   answers,
   modal,
-  modalEndOfGame,
+  modalFinal,
   main,
 };
 
