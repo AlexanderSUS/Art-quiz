@@ -1,10 +1,4 @@
-import {
-  IMAGE_URL_FULL,
-  LANG_RU,
-  PICTURE_QUIZ,
-  QUESTIONS_PER_CATEGORY,
-  RESULT_GAMEOVER,
-} from '../const';
+import { LANG_RU, PICTURE_QUIZ, QUESTIONS_PER_CATEGORY, RESULT_GAMEOVER } from '../const';
 import addPicture from '../helpers/addPicture';
 import fillPlayedCategory from '../helpers/fillPlayedCategory';
 import getCategoryImage from '../helpers/getCategoryImage';
@@ -144,14 +138,9 @@ export default class View {
 
   cleanPreviousCategories() {
     this.pages.categories.querySelectorAll('.played').forEach((element) => {
+      element.querySelector('.image-container').remove();
       element.classList.remove('played');
-
-      const cardTitleContainer = element.querySelector('.card-title-container');
-      cardTitleContainer.lastChild.textContent = '';
-
-      const imageContainer = element.querySelector('.image-container');
-      imageContainer.removeChild(imageContainer.lastChild);
-
+      element.querySelector('.card-title-container').lastChild.textContent = '';
       element.querySelector('.start-btn').style.backgroundImage = null;
     });
   }
@@ -206,8 +195,8 @@ export default class View {
     const variants = this.pages.questions.querySelector('.variants');
     if (variants) {
       this.repairAnswerTemplate();
-      this.clearAnswerClasses();
-      this.pages.questions.removeChild(variants);
+      this.clearAnswerClassesAndListeners();
+      variants.remove();
     }
   }
 
@@ -228,16 +217,12 @@ export default class View {
     this.currentPage.appendChild(this.components.answers[quizType]);
   }
 
-  clearAnswerClasses() {
+  clearAnswerClassesAndListeners() {
     this.currentPage.querySelector('.variants').classList.remove('expose');
     this.currentPage.querySelectorAll('.answer-btn').forEach((element) => {
       element.classList.remove('picked', 'true');
-      this.removeAnswerListeners(element);
+      element.removeEventListener('click', this.bindedAnswerHandler);
     });
-  }
-
-  removeAnswerListeners(button) {
-    button.removeEventListener('click', this.bindedAnswerHandler);
   }
 
   showTrueAnswer() {
@@ -263,8 +248,7 @@ export default class View {
   // *** MODAL ***
 
   fillModal({ author, imageNum, picture, year }, lang) {
-    const modalImage = this.currentModalWindow.querySelector('.modal-image');
-    modalImage.style.backgroundImage = `url(${IMAGE_URL_FULL}${imageNum}full.jpg)`;
+    addPicture(this.currentModalWindow.querySelector('.modal-image'), imageNum);
     this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
     this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
     this.currentModalWindow.querySelector('.modal-year').textContent = year;
