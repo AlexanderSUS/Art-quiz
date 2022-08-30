@@ -1,5 +1,5 @@
 import { LANG_RU, QUESTIONS_PER_CATEGORY } from '../const';
-import categories from '../utils/categories';
+import categories from '../data/categories';
 
 const getDefaultState = () => ({
   settings: {

@@ -1,4 +1,4 @@
-import dictionary from './dictionary';
+import dictionary from '../data/dictionary';
 import {
   CATEGORIES_PAGE,
   HOME_PAGE,

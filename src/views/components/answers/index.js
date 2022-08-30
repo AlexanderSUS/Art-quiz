@@ -1,4 +1,4 @@
-import htmlToElement from '../../../utils/htmlToElement';
+import htmlToElement from '../../../helpers/htmlToElement';
 import Picture from './picture.html';
 import Artist from './artist.html';
 

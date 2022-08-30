@@ -4,7 +4,7 @@ import fillPlayedCategory from '../helpers/fillPlayedCategory';
 import getCategoryImage from '../helpers/getCategoryImage';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
 import getRating from '../helpers/getRating';
-import categories from './categories';
+import categories from '../data/categories';
 
 export default class View {
   constructor(pages, components) {

@@ -3,7 +3,7 @@ import createAnswers from '../helpers/createAnswers';
 import getDefaultState from '../helpers/getDefaultState';
 import getQuestionStartPosition from '../helpers/getQuestionsRange';
 import shuffleAnswers from '../helpers/shuffleAnswers';
-import images from './images';
+import images from '../data/images';
 
 export default class Model {
   constructor(quiz) {
