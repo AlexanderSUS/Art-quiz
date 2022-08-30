@@ -60,7 +60,7 @@ export default class View {
     const categoryResults = results[quizType][categoryId];
 
     this.cleanPreviousAnswers();
-    this.hideModalwindow();
+    this.setDefaultModal();
     this.setRouteToBackBnts(quizType);
     this.insertQuestion(dictionary.question[quizType]);
     this.appendAnswersContainer(quizType);
@@ -247,6 +247,16 @@ export default class View {
   // *** END SETTINGS ***
 
   // *** MODAL ***
+  setDefaultModal() {
+    if (this.currentModalWindow === this.components.modalFinal) {
+      this.removeModalWindow();
+      this.changeCurrentModalWindow();
+      this.hideModalwindow();
+      this.appendModalWindow();
+    } else {
+      this.hideModalwindow();
+    }
+  }
 
   fillModal({ author, imageNum, picture, year }, lang) {
     addPicture(this.currentModalWindow.querySelector('.modal-image'), imageNum);
