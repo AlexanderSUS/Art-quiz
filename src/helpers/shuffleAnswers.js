@@ -1,9 +1,12 @@
 const shuffleAnswers = (answers) => {
-  for (let i = answers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i);
-    const k = answers[i];
-    answers[i] = answers[j];
-    answers[j] = k;
+  let currentIndex = answers.length;
+  let radnomIndex;
+
+  while (currentIndex) {
+    radnomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [answers[currentIndex], answers[radnomIndex]] = [answers[radnomIndex], answers[currentIndex]];
   }
 
   return answers;
