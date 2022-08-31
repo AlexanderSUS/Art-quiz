@@ -14,7 +14,7 @@ function fillPlayedCategory({
   const resultBtn = document.createElement('a');
   resultBtn.setAttribute('href', `#results=${quizType}=${categoryNum}`);
   resultBtn.classList.add('category-result-btn');
-  resultBtn.textContent = dictionary.titles.results;
+  resultBtn.textContent = dictionary.resultTitle;
 
   imageContainer.appendChild(resultBtn);
   imageContainer.style.backgroundImage = 'none';

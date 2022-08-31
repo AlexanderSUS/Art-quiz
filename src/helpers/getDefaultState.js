@@ -2,9 +2,7 @@ import { LANG_RU, QUESTIONS_PER_CATEGORY } from '../const';
 import categories from '../data/categories';
 
 const getDefaultState = () => ({
-  settings: {
-    lang: LANG_RU,
-  },
+  lang: LANG_RU,
   results: {
     artist: new Array(categories.length)
       .fill(null)

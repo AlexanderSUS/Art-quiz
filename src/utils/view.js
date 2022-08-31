@@ -1,9 +1,8 @@
-import { LANG_RU, PICTURE_QUIZ, QUESTIONS_PER_CATEGORY, RESULT_GAMEOVER } from '../const';
+import { PICTURE_QUIZ, QUESTIONS_PER_CATEGORY } from '../const';
 import addPicture from '../helpers/addPicture';
 import fillPlayedCategory from '../helpers/fillPlayedCategory';
 import getCategoryImage from '../helpers/getCategoryImage';
 import getIndexesOfPlayedCategories from '../helpers/getIndexesOfPlayedCategories';
-import getRating from '../helpers/getRating';
 import categories from '../data/categories';
 
 export default class View {
@@ -19,9 +18,9 @@ export default class View {
   }
 
   // *** ROUTING ***
-  fillNavButtonsText(dictionary) {
+  fillNavButtonsText(buttonsDictionary) {
     this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
-      btn.textContent = dictionary.buttons[btn.classList[0]];
+      btn.textContent = buttonsDictionary[btn.classList[0]];
     });
   }
 
@@ -39,36 +38,54 @@ export default class View {
     this.addActiveClass();
   }
 
-  fillHomePage(dictionary) {
-    this.fillNavButtonsText(dictionary);
+  fillHomePage(buttonDictionary) {
+    this.fillNavButtonsText(buttonDictionary);
     this.enableHomePageStyles();
   }
 
-  fillSettingsPage(dictionary) {
-    this.fillNavButtonsText(dictionary);
-    this.setSettingsTitles(dictionary);
+  fillSettingsPage({ buttons, isLangSwitchChecked }) {
+    this.fillNavButtonsText(buttons);
+    this.setSettingsTitles(buttons);
+    this.setLangButton(isLangSwitchChecked);
   }
 
-  fillCategoryPage(quiztype, results, dictionary) {
+  fillCategoryPage(data) {
     this.disableHomePageStyles();
     this.cleanPreviousCategories();
-    this.fillCategoryCards(quiztype, results, dictionary);
+    this.fillCategoryCards(data);
   }
 
-  fillQuestionPage(quizData, results, answers, dictionary, lang, saveResult) {
-    const { quizType, categoryId, pageNum } = quizData;
-    const categoryResults = results[quizType][categoryId];
-
+  fillQuestionPage({ quizType, answers, dictionary }) {
+    this.hideModalwindow(); // TODO find better place for call
     this.cleanPreviousAnswers();
-    this.setDefaultModal();
     this.setRouteToBackBnts(quizType);
-    this.insertQuestion(dictionary.question[quizType]);
+    this.fillNavButtonsText(dictionary.buttons);
+    this.insertQuestion(dictionary.question);
     this.appendAnswersContainer(quizType);
-    this.insertAuthorsAndPictures(quizType, answers, lang);
-    this.setRouteToModal(quizType, categoryId, pageNum, categoryResults, dictionary);
+    this.insertAuthorsAndPictures(quizType, answers);
     this.markTrueAnswer(answers);
+  }
+
+  fillModalWindow({ trueAnswer, nextRoute, isAnswerTrue }) {
+    this.setDefaultModal();
+    this.fillContentOfModalWindow(trueAnswer);
+    this.addCheckmarkToModal(isAnswerTrue);
+    this.setRouteToModal(nextRoute);
     this.appendModalWindow();
-    this.setAnswerListener(quizData, answers.trueAnswer, saveResult, lang);
+    this.showModalWindow(isAnswerTrue);
+  }
+
+  fillFinalModalWindow({ quizType, score, rating, title, navButtonData, buttonDictionary }) {
+    this.removeModalWindow();
+    this.changeCurrentModalWindow();
+    this.appendModalWindow();
+    this.setFinalTitle(title);
+    this.setFinalPicture(rating);
+    this.setScoreToModalWindow(score);
+    this.setFinalModalVariableButton(navButtonData);
+    this.setRouteToBackBnts(quizType);
+    this.fillNavButtonsText(buttonDictionary);
+    this.showModalWindow();
   }
 
   // *** END ROUTING ***
@@ -96,7 +113,7 @@ export default class View {
   // *** END STYLING METHODS ***
 
   // *** CATEGORIES ***
-  fillCategoryCards(quizType, results, dictionary) {
+  fillCategoryCards({ quizType, results, dictionary }) {
     const imageContainers = this.pages.categories.querySelectorAll('.image-container');
     const links = this.pages.categories.querySelectorAll('.start-btn');
     const titles = this.pages.categories.querySelectorAll('.card-title');
@@ -137,9 +154,10 @@ export default class View {
 
   cleanPreviousCategories() {
     this.pages.categories.querySelectorAll('.played').forEach((element) => {
-      element.querySelector('.image-container').remove();
       element.classList.remove('played');
-      element.querySelector('.card-title-container').lastChild.textContent = '';
+      element.querySelector('.category-result-btn').remove();
+      element.querySelector('.image-container').style.backgroundImage = null;
+      element.querySelector('.score').textContent = '';
       element.querySelector('.start-btn').style.backgroundImage = null;
     });
   }
@@ -150,48 +168,31 @@ export default class View {
     this.currentPage.querySelector('h4').textContent = question;
   }
 
-  setAnswerListener({ quizType }, trueAnswer, saveResult, lang) {
-    this.bindedAnswerHandler = this.handleAnswer(saveResult, trueAnswer, lang).bind(this);
-
-    this.components.answers[quizType].querySelectorAll('.answer-btn').forEach((button) => {
-      button.addEventListener('click', this.bindedAnswerHandler, { once: true });
-    });
+  // eslint-disable-next-line class-methods-use-this
+  hightLightAnswer(button) {
+    button.classList.add('picked');
   }
 
-  handleAnswer(saveResult, trueAnswer, lang) {
-    return ({ target }) => {
-      const isResultTrue = target.classList.contains('true');
-
-      target.classList.add('picked');
-
-      saveResult(isResultTrue);
-
-      this.addCheckmarkToModal(isResultTrue);
-      this.showTrueAnswer();
-      this.fillModal(trueAnswer, lang);
-      this.showModalWindow(isResultTrue);
-    };
-  }
-
-  insertAuthorsAndPictures(quizType, { trueAnswer, all }, lang) {
+  insertAuthorsAndPictures(quizType, { trueAnswer, allAnswers }) {
     const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
     const picturesElms = this.currentPage.querySelectorAll('.picture');
 
     if (quizType === PICTURE_QUIZ) {
-      header.textContent = header.textContent.replace('__artist__', trueAnswer.author[lang]);
+      header.textContent = header.textContent.replace('__artist__', trueAnswer.author);
 
       picturesElms.forEach((picture, index) => {
-        addPicture(picture, all[index].imageNum);
+        addPicture(picture, allAnswers[index].imageNum);
       });
     } else {
       addPicture(...picturesElms, trueAnswer.imageNum);
 
       answersElms.forEach((answer, index) => {
-        answer.textContent = all[index].author[lang];
+        answer.textContent = allAnswers[index].author;
       });
     }
   }
 
+  // TODO Try to perfome it after game end
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
     if (variants) {
@@ -201,9 +202,11 @@ export default class View {
     }
   }
 
-  markTrueAnswer({ all, trueAnswer }) {
+  markTrueAnswer({ allAnswers, trueAnswer }) {
     const answerBtns = this.currentPage.querySelectorAll('.answer-btn');
-    const trueAnswerIndex = all.findIndex((answer) => answer.imageNum === trueAnswer.imageNum);
+    const trueAnswerIndex = allAnswers.findIndex(
+      (answer) => answer.imageNum === trueAnswer.imageNum,
+    );
 
     answerBtns[trueAnswerIndex].classList.add('true');
   }
@@ -233,16 +236,16 @@ export default class View {
   }
 
   // *** SETTINGS ***
-  setSettingsTitles(dictionary) {
-    const { language, timeGame, timeToAnswer } = dictionary.buttons;
+  setSettingsTitles(dictionaryButtons) {
+    const { language, timeGame, timeToAnswer } = dictionaryButtons;
 
     this.pages.settings.querySelector('.lang-title').textContent = language;
     this.pages.settings.querySelector('.time-check-title').textContent = timeGame;
     this.pages.settings.querySelector('.time-value-title').textContent = timeToAnswer;
   }
 
-  setLangButton(currentLanguage) {
-    this.pages.settings.querySelector('#lang-check').checked = currentLanguage === LANG_RU;
+  setLangButton(isLangSwitchChecked) {
+    this.pages.settings.querySelector('#lang-check').checked = isLangSwitchChecked;
   }
   // *** END SETTINGS ***
 
@@ -251,17 +254,14 @@ export default class View {
     if (this.currentModalWindow === this.components.modalFinal) {
       this.removeModalWindow();
       this.changeCurrentModalWindow();
-      this.hideModalwindow();
       this.appendModalWindow();
-    } else {
-      this.hideModalwindow();
     }
   }
 
-  fillModal({ author, imageNum, picture, year }, lang) {
+  fillContentOfModalWindow({ author, imageNum, picture, year }) {
     addPicture(this.currentModalWindow.querySelector('.modal-image'), imageNum);
-    this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture[lang];
-    this.currentModalWindow.querySelector('.modal-author').textContent = author[lang];
+    this.currentModalWindow.querySelector('.modal-picture-name').textContent = picture;
+    this.currentModalWindow.querySelector('.modal-author').textContent = author;
     this.currentModalWindow.querySelector('.modal-year').textContent = year;
   }
 
@@ -278,13 +278,12 @@ export default class View {
     this.currentModalWindow = this.currentModalWindow === modal ? modalFinal : modal;
   }
 
-  showModalWindow(resultTrue) {
-    setTimeout(
-      () => {
-        this.currentModalWindow.classList.add('show');
-      },
-      resultTrue ? 300 : 1000,
-    );
+  showModalWindow(isResultTrue) {
+    const showModal = () => {
+      this.currentModalWindow.classList.add('show');
+    };
+
+    setTimeout(showModal, isResultTrue ? 300 : 1000);
   }
 
   hideModalwindow() {
@@ -296,26 +295,10 @@ export default class View {
     this.components.modal.querySelector('.modal-image').classList.add(answer);
   }
 
-  fillFinalModal(quizType, categoryId, categoryResults, { titles, buttons }) {
-    const score = categoryResults.filter((res) => res === true).length;
-    const rating = getRating(score);
-
-    this.setFinalTitle(titles[rating]);
-    this.setFinalPicture(rating);
-    this.setScoreToModalWindow(score);
-    this.setFinalModalVariableButton(score, buttons, quizType, categoryId);
-  }
-
-  setFinalModalVariableButton(score, dictionaryButtons, quizType, categoryId) {
+  setFinalModalVariableButton({ path, title }) {
     const varyBtn = this.currentModalWindow.querySelector('.modal-vary-btn');
-
-    if (score > RESULT_GAMEOVER) {
-      varyBtn.setAttribute('href', `#questions=${quizType}=${+categoryId + 1}=0`);
-      varyBtn.textContent = dictionaryButtons.nextQuiz;
-    } else {
-      varyBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=0`);
-      varyBtn.textContent = dictionaryButtons.playAgain;
-    }
+    varyBtn.setAttribute('href', path);
+    varyBtn.textContent = title;
   }
 
   setScoreToModalWindow(score) {
@@ -334,31 +317,8 @@ export default class View {
     this.currentModalWindow.querySelector('.end-of-game-title').textContent = title;
   }
 
-  showFinalModal(quizType, categoryId, categoryResults, dictionary) {
-    this.removeModalWindow();
-    this.changeCurrentModalWindow();
-    this.fillFinalModal(quizType, categoryId, categoryResults, dictionary);
-    this.appendModalWindow();
-    this.setRouteToBackBnts(quizType);
-    this.fillNavButtonsText(dictionary);
-    this.showModalWindow();
-  }
-
-  setRouteToModal(quizType, categoryId, pageNum, categoryResults, dictionary) {
-    const modalNextBtn = this.components.modal.querySelector('.modal-next-btn');
-    const bindedShowFilnalModalMethod = this.showFinalModal.bind(
-      this,
-      quizType,
-      categoryId,
-      categoryResults,
-      dictionary,
-    );
-
-    if (+pageNum === QUESTIONS_PER_CATEGORY - 1) {
-      modalNextBtn.addEventListener('click', bindedShowFilnalModalMethod, { once: true });
-    } else {
-      modalNextBtn.setAttribute('href', `#questions=${quizType}=${categoryId}=${+pageNum + 1}`);
-    }
+  setRouteToModal(nextRoute) {
+    this.components.modal.querySelector('.modal-next-btn').setAttribute('href', nextRoute);
   }
 
   // *** END MODAL ***
