@@ -17,7 +17,6 @@ export default class View {
     this.bindedAnswerHandler = null;
   }
 
-  // *** ROUTING ***
   fillNavButtonsText(buttonsDictionary) {
     this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
       btn.textContent = buttonsDictionary[btn.classList[0]];
@@ -85,9 +84,6 @@ export default class View {
     this.showModalWindow();
   }
 
-  // *** END ROUTING ***
-
-  // *** STYLING METHODS ***
   enableHomePageStyles() {
     if (!this.components.header.classList.contains('at-home')) {
       this.components.header.classList.add('at-home');
@@ -107,9 +103,7 @@ export default class View {
       this.currentPage.classList.add('active');
     }, 300);
   }
-  // *** END STYLING METHODS ***
 
-  // *** CATEGORIES ***
   fillCategoryCards({ quizType, results, dictionary }) {
     const imageContainers = this.pages.categories.querySelectorAll('.image-container');
     const links = this.pages.categories.querySelectorAll('.start-btn');
@@ -158,9 +152,7 @@ export default class View {
       element.querySelector('.start-btn').style.backgroundImage = null;
     });
   }
-  // *** END CATEGORIES ***
 
-  // *** QUESTIONS ***
   insertQuestion(question) {
     this.currentPage.querySelector('h4').textContent = question;
   }
@@ -232,7 +224,6 @@ export default class View {
     }, 300);
   }
 
-  // *** SETTINGS ***
   setSettingsTitles(dictionaryButtons) {
     const { language, timeGame, timeToAnswer } = dictionaryButtons;
 
@@ -244,9 +235,7 @@ export default class View {
   setLangButton(isLangSwitchChecked) {
     this.pages.settings.querySelector('#lang-check').checked = isLangSwitchChecked;
   }
-  // *** END SETTINGS ***
 
-  // *** MODAL ***
   setDefaultModal() {
     if (this.currentModalWindow === this.components.modalFinal) {
       this.changeCurrentModalWindow();
@@ -313,6 +302,4 @@ export default class View {
   setRouteToModal(nextRoute) {
     this.components.modal.querySelector('.modal-next-btn').setAttribute('href', nextRoute);
   }
-
-  // *** END MODAL ***
 }
