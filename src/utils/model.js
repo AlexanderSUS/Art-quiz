@@ -65,7 +65,6 @@ export default class Model {
 
     this.answers = {
       trueAnswer: translatedTrueAnswer,
-      falseAnswers: translatedFalseAnswers,
       allAnswers: shuffleAnswers([translatedTrueAnswer, ...translatedFalseAnswers]),
     };
   }
@@ -155,9 +154,5 @@ export default class Model {
       path: toCurrentCategory,
       title: dictionary[this.state.lang].buttons.playAgain,
     };
-  }
-
-  getDictionary() {
-    return dictionary[this.state.lang];
   }
 }
