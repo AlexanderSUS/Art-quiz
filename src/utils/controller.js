@@ -20,6 +20,7 @@ export default class Controller {
       this.switchLanguage();
       this.setAnswerHandler();
       this.setEndQuizHandler();
+      this.hideModalWindowListener();
 
       window.addEventListener('hashchange', this.handleLocation.bind(this));
     };
@@ -71,7 +72,9 @@ export default class Controller {
 
   handleEndOfQuiz() {
     if (this.model.pageNum === QUESTIONS_PER_CATEGORY - 1) {
-      this.view.fillFinalModalWindow(this.model.getFinalModalWindowData());
+      setTimeout(() => {
+        this.view.fillFinalModalWindow(this.model.getFinalModalWindowData());
+      }, 0);
     }
   }
 
@@ -79,6 +82,15 @@ export default class Controller {
     this.view.components.modal
       .querySelector('.modal-next-btn')
       .addEventListener('click', this.handleEndOfQuiz.bind(this));
+  }
+
+  hideModalWindowListener() {
+    const modalNextBtn = this.view.components.modal.querySelector('.modal-next-btn');
+    const finalModalNextBtns = this.view.components.modalFinal.querySelectorAll('.modal-btn');
+
+    [modalNextBtn, ...finalModalNextBtns].forEach((button) => {
+      button.addEventListener('click', () => this.view.detachModalWindow());
+    });
   }
 
   switchLanguage() {

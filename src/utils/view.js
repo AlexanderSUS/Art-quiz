@@ -56,7 +56,6 @@ export default class View {
   }
 
   fillQuestionPage({ quizType, answers, dictionary }) {
-    this.hideModalwindow(); // TODO find better place for call
     this.cleanPreviousAnswers();
     this.setRouteToBackBnts(quizType);
     this.fillNavButtonsText(dictionary.buttons);
@@ -67,18 +66,16 @@ export default class View {
   }
 
   fillModalWindow({ trueAnswer, nextRoute, isAnswerTrue }) {
-    this.setDefaultModal();
     this.fillContentOfModalWindow(trueAnswer);
     this.addCheckmarkToModal(isAnswerTrue);
     this.setRouteToModal(nextRoute);
-    this.appendModalWindow();
-    this.showModalWindow(isAnswerTrue);
+    this.attachModalWindow();
+    this.showModalWindow();
   }
 
   fillFinalModalWindow({ quizType, score, rating, title, navButtonData, buttonDictionary }) {
-    this.removeModalWindow();
     this.changeCurrentModalWindow();
-    this.appendModalWindow();
+    this.attachModalWindow();
     this.setFinalTitle(title);
     this.setFinalPicture(rating);
     this.setScoreToModalWindow(score);
@@ -252,9 +249,7 @@ export default class View {
   // *** MODAL ***
   setDefaultModal() {
     if (this.currentModalWindow === this.components.modalFinal) {
-      this.removeModalWindow();
       this.changeCurrentModalWindow();
-      this.appendModalWindow();
     }
   }
 
@@ -265,20 +260,12 @@ export default class View {
     this.currentModalWindow.querySelector('.modal-year').textContent = year;
   }
 
-  appendModalWindow() {
-    this.currentPage.appendChild(this.currentModalWindow);
-  }
-
-  removeModalWindow() {
-    this.currentPage.removeChild(this.currentModalWindow);
-  }
-
   changeCurrentModalWindow() {
     const { modalFinal, modal } = this.components;
     this.currentModalWindow = this.currentModalWindow === modal ? modalFinal : modal;
   }
 
-  showModalWindow(isResultTrue) {
+  showModalWindow(isResultTrue = false) {
     const showModal = () => {
       this.currentModalWindow.classList.add('show');
     };
@@ -286,8 +273,14 @@ export default class View {
     setTimeout(showModal, isResultTrue ? 300 : 1000);
   }
 
-  hideModalwindow() {
+  attachModalWindow() {
+    this.currentPage.appendChild(this.currentModalWindow);
+  }
+
+  detachModalWindow() {
     this.currentModalWindow.classList.remove('show');
+    this.currentPage.removeChild(this.currentModalWindow);
+    this.setDefaultModal();
   }
 
   addCheckmarkToModal(answer) {
