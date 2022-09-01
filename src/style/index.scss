@@ -35,23 +35,17 @@ a {
 }
 
 @media(max-width: 1366px) {
-  html {
-    font-size: 14px;
-  }
-
   #root {
     width: 90%;
-  }
-}
-
-@media(max-width: 1024px) {
-  html {
-    font-size: 12px;
   }
 }
 
 @media(max-width: 768px) {
   html {
     font-size: 10px;
+  }
+
+  #root {
+    width: 95%;
   }
 }
