@@ -85,16 +85,14 @@ export default class View {
   }
 
   enableHomePageStyles() {
-    if (!this.components.header.classList.contains('at-home')) {
-      this.components.header.classList.add('at-home');
-      this.components.main.classList.add('at-home');
+    if (this.components.header.classList.contains('mini')) {
+      this.components.header.classList.remove('mini');
     }
   }
 
   disableHomePageStyles() {
-    if (this.components.header.classList.contains('at-home')) {
-      this.components.header.classList.remove('at-home');
-      this.components.main.classList.remove('at-home');
+    if (!this.components.header.classList.contains('.mini')) {
+      this.components.header.classList.add('mini');
     }
   }
 

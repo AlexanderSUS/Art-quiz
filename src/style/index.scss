@@ -1,27 +1,57 @@
 @use './vars.scss';
 
-* {
-  box-sizing: border-box;
+html, body {
   margin: 0;
   padding: 0;
 }
 
 body {
+  box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
-  font-size: 1rem;
   font-weight: 400;
   color: $light-color;
-
-  height: 100%;
 
   background-color: $dark-color;
 }
 
+#root {
+  width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
 main {
-  height: auto;
+  min-height: 70vh;
   transition: $page-transiton;
 }
 
-main.at-home {
-  height: 70vh;
+h5 {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media(max-width: 1366px) {
+  html {
+    font-size: 14px;
+  }
+
+  #root {
+    width: 90%;
+  }
+}
+
+@media(max-width: 1024px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media(max-width: 768px) {
+  html {
+    font-size: 10px;
+  }
 }

@@ -1,74 +1,37 @@
 @use '../../../style/vars.scss';
 
-$logo-container-mini: 7vh;
-$logo-container-large: 20vh;
-$logo-mini: 3vh;
-$logo-large: 8vh;
+$logo-container-mini: 4.75rem;
+$logo-container-large: 13.5rem;
+$logo-mini: 2rem;
+$logo-large: 5.375rem;
 
 header {
   display: flex;
-  align-items: flex-end;
-  height: 10vh;
+  justify-content: space-around;
+  align-items: center;
+  height: 25vh;
 
   transition: $page-transiton;
 }
 
-// .text-home {
-//   writing-mode: vertical-lr;
-//   text-orientation: upright;
-//   letter-spacing: 0;
-// }
-
-header .logo-container {
-  left: 3vh;
-  height: $logo-container-mini;
-  width: $logo-container-mini;
-
-  .logo-up, .logo-bottom {
-    font-size: $logo-mini;
-    opacity: 0.8;
-  }
-
-  .logo-home {
-    display: block;
-    position: absolute;
-    top: -2.8vh;
-    left: -1.5vh;
-    height: 10vh;
-    width: 10vh;
-
-    opacity: 0.5;
-    z-index: -1;
-  }
-}
-
-header.at-home {
-  justify-content: center;
-  height: 25vh;
-}
-
-header.at-home .logo-container {
-  left: 0;
-  height: $logo-container-large;
-  width: $logo-container-large;
-
-  .logo-up, .logo-bottom {
-    font-size: $logo-large;
-    opacity: 0.9;
-  }
-
-  .logo-home {
-    display: none;
-  }
-}
-
 .logo-container {
-  position: relative;
+  color: $light-color
+}
 
+.logo-up, .logo-bottom {
   text-align: center;
-  font-weight: 700;
+  font-size: $logo-large;
+  font-weight: bold;
+  opacity: 0.8;
+}
 
-  transition: 0.3s;
+header.mini {
+  height: 12vh;
+  justify-content: flex-start;
+
+ .logo-up, .logo-bottom {
+    font-size: $logo-mini;
+  }
 }
 
 .logo-up {
@@ -77,7 +40,17 @@ header.at-home .logo-container {
   border-top-left-radius: 10px ;
 }
 
-.logo-container a {
-  text-decoration: none;
-  color: $light-color
+.logo-bottom {
+  color: $light-color;
+  background-color: $dark-color;
+}
+
+.logo-home {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  header.mini {
+    height: 10vh;
+  }
 }
