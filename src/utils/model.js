@@ -94,12 +94,18 @@ export default class Model {
   getQuestionPageData() {
     this.getAnswers();
 
+    let question = dictionary[this.state.lang].question[this.quizType];
+
+    if (this.quizType === PICTURE_QUIZ) {
+      question = question.replace('__artist__', this.answers.trueAnswer.author);
+    }
+
     return {
       quizType: this.quizType,
       answers: this.answers,
       dictionary: {
         buttons: dictionary[this.state.lang].buttons,
-        question: dictionary[this.state.lang].question[this.quizType],
+        question,
       },
     };
   }

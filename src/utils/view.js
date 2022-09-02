@@ -146,7 +146,7 @@ export default class View {
   }
 
   insertQuestion(question) {
-    this.currentPage.querySelector('h4').textContent = question;
+    this.currentPage.querySelector('.question.artist').textContent = question;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -155,12 +155,11 @@ export default class View {
   }
 
   insertAuthorsAndPictures(quizType, { trueAnswer, allAnswers }) {
-    const [header, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
+    // eslint-disable-next-line no-unused-vars
+    const [_, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
     const picturesElms = this.currentPage.querySelectorAll('.picture');
 
     if (quizType === PICTURE_QUIZ) {
-      header.textContent = header.textContent.replace('__artist__', trueAnswer.author);
-
       picturesElms.forEach((picture, index) => {
         addPicture(picture, allAnswers[index].imageNum);
       });
@@ -177,7 +176,6 @@ export default class View {
   cleanPreviousAnswers() {
     const variants = this.pages.questions.querySelector('.variants');
     if (variants) {
-      this.repairAnswerTemplate();
       this.clearAnswerClassesAndListeners();
       variants.remove();
     }
@@ -190,12 +188,6 @@ export default class View {
     );
 
     answerBtns[trueAnswerIndex].classList.add('true');
-  }
-
-  repairAnswerTemplate() {
-    this.pages.questions.querySelectorAll('.answer-btn.artist').forEach((element) => {
-      element.textContent = '__artist__';
-    });
   }
 
   appendAnswersContainer(quizType) {
