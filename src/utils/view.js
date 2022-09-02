@@ -107,7 +107,6 @@ export default class View {
     const links = this.pages.categories.querySelectorAll('.start-btn');
     const titles = this.pages.categories.querySelectorAll('.card-title');
     const cards = this.pages.categories.querySelectorAll('.card');
-    const score = document.querySelectorAll('.score');
     const played = getIndexesOfPlayedCategories(results);
 
     categories.forEach((category, categoryId) => {
@@ -121,16 +120,13 @@ export default class View {
 
       if (played.includes(categoryId)) {
         cards[categoryId].classList.add('played');
-        links[categoryId].style.backgroundImage = 'url(/assets/replay.svg)';
         isPlayed = true;
 
         fillPlayedCategory({
           imageContainer: imageContainers[categoryId],
-          score: score[categoryId],
-          quizType,
-          categoryNum: categoryId,
-          categoryResults: results[categoryId],
-          dictionary,
+          resultPath: `#results=${quizType}=${categoryId}`,
+          categoryResults: results[categoryId].filter((element) => element === true).length,
+          resultTitle: dictionary.resultTitle,
         });
       }
 
@@ -146,7 +142,6 @@ export default class View {
       element.classList.remove('played');
       element.querySelector('.category-result-btn').remove();
       element.querySelector('.image-container').style.backgroundImage = null;
-      element.querySelector('.score').textContent = '';
       element.querySelector('.start-btn').style.backgroundImage = null;
     });
   }

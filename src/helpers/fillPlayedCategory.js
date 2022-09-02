@@ -1,20 +1,15 @@
 import { QUESTIONS_PER_CATEGORY } from '../const';
 
-function fillPlayedCategory({
-  imageContainer,
-  score,
-  quizType,
-  categoryNum,
-  categoryResults,
-  dictionary,
-}) {
-  const scoreAmount = categoryResults.filter((element) => element === true).length;
-  score.textContent = `${scoreAmount}/${QUESTIONS_PER_CATEGORY}`;
-
+function fillPlayedCategory({ imageContainer, resultPath, categoryResults, resultTitle }) {
   const resultBtn = document.createElement('a');
-  resultBtn.setAttribute('href', `#results=${quizType}=${categoryNum}`);
+
+  resultBtn.innerHTML = `
+    <span class="result-title">${resultTitle}</span>
+    <span class="result-score">${categoryResults}/${QUESTIONS_PER_CATEGORY}</span>
+  `;
+
+  resultBtn.setAttribute('href', resultPath);
   resultBtn.classList.add('category-result-btn');
-  resultBtn.textContent = dictionary.resultTitle;
 
   imageContainer.appendChild(resultBtn);
   imageContainer.style.backgroundImage = 'none';
