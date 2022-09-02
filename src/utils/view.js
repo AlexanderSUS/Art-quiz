@@ -19,7 +19,8 @@ export default class View {
 
   fillNavButtonsText(buttonsDictionary) {
     this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
-      btn.textContent = buttonsDictionary[btn.classList[0]];
+      const [buttonFirstClass] = btn.classList;
+      btn.textContent = buttonsDictionary[buttonFirstClass];
     });
   }
 
@@ -56,8 +57,6 @@ export default class View {
 
   fillQuestionPage({ quizType, answers, dictionary }) {
     this.cleanPreviousAnswers();
-    this.setRouteToBackBnts(quizType);
-    this.fillNavButtonsText(dictionary.buttons);
     this.insertQuestion(dictionary.question);
     this.appendAnswersContainer(quizType);
     this.insertAuthorsAndPictures(quizType, answers);
