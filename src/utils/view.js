@@ -18,14 +18,14 @@ export default class View {
   }
 
   fillNavButtonsText(buttonsDictionary) {
-    this.currentPage.querySelectorAll('.nav-btn').forEach((btn) => {
+    this.app.querySelectorAll('.nav-btn').forEach((btn) => {
       const [buttonFirstClass] = btn.classList;
       btn.textContent = buttonsDictionary[buttonFirstClass];
     });
   }
 
   setRouteToBackBnts(quizType) {
-    this.currentPage.querySelectorAll('.back-btn, .modal-back-btn').forEach((element) => {
+    this.app.querySelectorAll('.back-btn, .modal-back-btn').forEach((element) => {
       element.setAttribute('href', `#categories=${quizType}`);
     });
   }
@@ -66,8 +66,8 @@ export default class View {
   fillModalWindow({ trueAnswer, nextRoute, isAnswerTrue }) {
     this.fillContentOfModalWindow(trueAnswer);
     this.addCheckmarkToModal(isAnswerTrue);
-    this.setRouteToModal(nextRoute);
     this.attachModalWindow();
+    this.setRouteToModal(nextRoute);
     this.showModalWindow();
   }
 
@@ -246,12 +246,12 @@ export default class View {
   }
 
   attachModalWindow() {
-    this.currentPage.appendChild(this.currentModalWindow);
+    this.app.appendChild(this.currentModalWindow);
   }
 
   detachModalWindow() {
     this.currentModalWindow.classList.remove('show');
-    this.currentPage.removeChild(this.currentModalWindow);
+    this.app.removeChild(this.currentModalWindow);
     this.setDefaultModal();
   }
 
