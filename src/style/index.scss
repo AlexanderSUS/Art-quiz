@@ -40,12 +40,14 @@ a {
   }
 }
 
+@media (max-width: 912px) {
+  #root {
+    width: 96%;
+  }
+}
+
 @media(max-width: 768px) {
   html {
     font-size: 10px;
-  }
-
-  #root {
-    width: 95%;
   }
 }

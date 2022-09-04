@@ -1,0 +1,63 @@
+.picture-quiz {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+
+  margin: auto 0;
+}
+
+.answer-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: calc(80vw / 4 - 1rem);  
+  height: calc(80vw / 4 - 1rem);  
+
+  background-size: cover;
+}
+
+.false-answer, .true-answer {
+  display: none;
+}
+
+.answer-picture.picked .false-answer {
+  display: block;
+}
+
+.answer-picture.picked.true {
+
+  .true-answer {
+    display: block;
+  }
+
+  .false-answer {
+    display: none;
+  }
+}
+
+.picture-quiz.expose .answer-picture.true {
+  .true-answer {
+    display: block;
+  }
+}
+
+@media (max-width: 1366px) {
+  .answer-picture {
+    width: calc(90vw / 4 - 1rem);  
+    height: calc(90vw / 4 - 1rem);  
+  }
+}
+
+@media (max-width: 912px) {
+  .picture-quiz {
+    justify-content: center;
+    gap: 2rem;
+    margin: auto 0;
+  }
+
+  .answer-picture {
+    width: calc(96vw / 2 - 2rem);  
+    height: calc(96vw / 2 - 2rem);  
+  }
+}

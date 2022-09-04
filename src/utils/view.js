@@ -155,7 +155,7 @@ export default class View {
   }
 
   insertAuthorsAndPictures(quizType, { trueAnswer, allAnswers }) {
-    const answersElms = Array.from(this.currentPage.querySelectorAll('.artist'));
+    const answersElms = Array.from(this.currentPage.querySelectorAll('.author'));
     const picturesElms = this.currentPage.querySelectorAll('.picture');
 
     if (quizType === PICTURE_QUIZ) {
