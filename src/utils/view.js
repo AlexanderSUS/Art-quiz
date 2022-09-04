@@ -146,7 +146,7 @@ export default class View {
   }
 
   insertQuestion(question) {
-    this.currentPage.querySelector('.question.artist').textContent = question;
+    this.currentPage.querySelector('.question-text').textContent = question;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -155,8 +155,7 @@ export default class View {
   }
 
   insertAuthorsAndPictures(quizType, { trueAnswer, allAnswers }) {
-    // eslint-disable-next-line no-unused-vars
-    const [_, ...answersElms] = Array.from(this.currentPage.querySelectorAll('.artist'));
+    const answersElms = Array.from(this.currentPage.querySelectorAll('.artist'));
     const picturesElms = this.currentPage.querySelectorAll('.picture');
 
     if (quizType === PICTURE_QUIZ) {
