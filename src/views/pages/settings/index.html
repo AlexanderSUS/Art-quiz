@@ -1,18 +1,18 @@
 <div class="settings-container">
   <div class="settings-block sound-settings">
-    <div class="sound-btn"></div>
+    <label class="sound-btn" for="volume-range"></label>
     <input class="volume-range" type="range" value="40" min="0" max="100" step="1" id="volume-range">
   </div>
   <div class="settings-block time-settings">
     <div class="time-game">
       <label class="time-check-title" for="time-check"></label>
-      <input class="time-check" type="checkbox" id="time">
+      <input class="time-check" type="checkbox" id="time-check">
     </div>
-    <div class="settings-block time-choise">
+    <div class="time-choise">
       <label class="time-value-title" for="time-value"></label>
       <div class="time-adjuster">
         <button class="time-input minus"></button>
-        <input class="time-value" id="time-value" type="number" step="5" min="5" max="30" placeholder="20"></input>
+        <input class="time-value" id="time-value" type="number" step="5" min="5" max="30" placeholder="20">
         <button class="time-input plus"></button>
       </div>
     </div>
@@ -30,6 +30,8 @@
         </div>
     </div>
   </div>
+  <div class="settings-block">
 <!-- Do not change posision of class "home"! it must be first!! -->
-  <a class="home settings-back-btn nav-btn" href="#home">Back</a>
+    <a class="home settings-back-btn nav-btn" href="#home">Back</a>
+  </div>
 </div>
