@@ -1,0 +1,29 @@
+@use '../../../style/vars.scss';
+
+.questions {
+  position: relative;
+  left: 100%;
+
+  display: flex;
+  flex-direction: column;
+  min-height: $page-height;
+
+  transition: $page-transiton;
+}
+
+.questions.active {
+  left: 0;
+}
+
+.question-text {
+  height: auto;
+  font-size: 3rem;
+  text-align: center;
+  margin: 0 0 2rem 0 ;
+}
+
+@media(max-width: 420px) {
+.question-text {
+  margin-bottom: 1rem;
+}
+}

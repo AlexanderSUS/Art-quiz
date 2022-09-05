@@ -1,0 +1,56 @@
+@use '../../../style/vars.scss';
+
+$logo-container-mini: 4.75rem;
+$logo-container-large: 13.5rem;
+$logo-mini: 2rem;
+$logo-large: 5.375rem;
+
+header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 25vh;
+
+  transition: $page-transiton;
+}
+
+.logo-container {
+  color: $light-color
+}
+
+.logo-up, .logo-bottom {
+  text-align: center;
+  font-size: $logo-large;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+header.mini {
+  height: 12vh;
+  justify-content: flex-start;
+
+ .logo-up, .logo-bottom {
+    font-size: $logo-mini;
+  }
+}
+
+.logo-up {
+  color: $dark-color;
+  background-color: $light-color;
+  border-top-left-radius: 10px ;
+}
+
+.logo-bottom {
+  color: $light-color;
+  background-color: $dark-color;
+}
+
+.logo-home {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  header.mini {
+    height: 6vh;
+  }
+}

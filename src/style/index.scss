@@ -1,0 +1,61 @@
+@use './vars.scss';
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  color: $light-color;
+
+  background-color: $dark-color;
+}
+
+#root {
+  width: 80%;
+  margin: 0 auto;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+main {
+  min-height: 70vh;
+  transition: $page-transiton;
+}
+
+main.max {
+  min-height: 83vh;
+}
+
+h5 {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media(max-width: 1366px) {
+  #root {
+    width: 90%;
+  }
+}
+
+@media (max-width: 912px) {
+  #root {
+    width: 96%;
+  }
+}
+
+@media(max-width: 768px) {
+  html {
+    font-size: 10px;
+  }
+
+  main.max {
+    min-height: 89vh;
+  }
+}
