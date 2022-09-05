@@ -85,12 +85,14 @@ export default class View {
 
   enableHomePageStyles() {
     if (this.components.header.classList.contains('mini')) {
+      this.components.main.classList.remove('max');
       this.components.header.classList.remove('mini');
     }
   }
 
   disableHomePageStyles() {
     if (!this.components.header.classList.contains('.mini')) {
+      this.components.main.classList.add('max');
       this.components.header.classList.add('mini');
     }
   }
